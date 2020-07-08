@@ -19,8 +19,8 @@ class Reader:
         self.patientName = patientName; 
         self.readFromFile = 1; 
         self.patientName = patientName;
-        self.datafile_entries = self.patientName + '\\' + 'response_entries.json'; 
-        self.datafile_treatments = self.patientName + '\\' + 'response_treatments.json';
+        self.datafile_entries = '..\\'+ self.patientName + '\\' + 'response_entries.json'; 
+        self.datafile_treatments = '..\\'+ self.patientName + '\\' + 'response_treatments.json';
         
         self.dfEntries = pd.DataFrame();
         self.dfTreatments = pd.DataFrame();

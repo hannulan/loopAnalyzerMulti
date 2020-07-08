@@ -19,9 +19,9 @@ import Analyzer
 
 import help_func
 
-if 1:
+if 0:
     # Read data for patient Aksel.
-    akselReader = Reader.Reader('.');
+    akselReader = Reader.Reader('Aksel');
     akselReader.readData(); 
     
     akselReader.createCGMStructure();
@@ -42,6 +42,8 @@ timeAboveRange_per, timeBelowRange_per, timeInRange_per = akselAnalyzer.calcTime
 timeAboveTarget_per, timeBelowTarget_per, timeInTarget_per = akselAnalyzer.calcTimeInTarget(dfCGM)
 
 stdCGM = akselAnalyzer.calcStdCGM(dfCGM);
+
+MARD, PGS, GVI = akselAnalyzer.calcMARD_PGS_GVI(dfCGM)
 
 basalPercentage, bolusPercentage, tot = akselAnalyzer.basalBolusPercentage(dfBasal, dfBolus)
 
@@ -69,7 +71,10 @@ print('Total delivery:   ' + str(tot))
 print('Basal percentage: ' + str(basalPercentage))
 print('Bolus percentage: ' + str(bolusPercentage))
 
-## Todo:
+## Todo: Calc MARD
+## Todo: Calc PGS
+## Todo: Calc GVI
+
 print('Show MARD')
 print('Show PGS')
 print('Show GVI')

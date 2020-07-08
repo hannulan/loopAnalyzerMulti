@@ -14,8 +14,11 @@ class Analyzer:
     nightTime   = [dt.time(2,0,0), dt.time(7,0,0)];
     dayTime     = [dt.time(7,0,0), dt.time(23,59,59)];
     
+    
+    
     def __init__(self, patientName):
         self.PatientName = patientName;
+        self.storage = 0;
         
     
     
@@ -69,10 +72,15 @@ class Analyzer:
         
         return timeAboveRange_per, timeBelowRange_per, timeInRange_per
     
-    
+    def calcMARD_PGS_GVI(self, dfCGM):
+        # Calculate MARD, PGS, GVI and returns
+        MARD = 0;
+        PGC = 0; 
+        GVI = 0;
+        return MARD, PGC, GVI    
     
     def basalBolusPercentage(self, dfBasal, dfBolus):
-        # Thie function...
+        # Thi function...
         
         totBolus = sum(dfBolus['bolus']);
         N = len(dfBasal);
