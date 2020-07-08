@@ -10,25 +10,28 @@ import numpy as np
 import pandas as pd
 import requests
 #import maya
+
 import datetime as dt
 
 class Reader: 
    
     
-    def __init__(self, patientName):
+    def __init__(self, patientName, fileNameEntries, fileNameTreatments):
         self.patientName = patientName; 
         self.readFromFile = 1; 
         self.patientName = patientName;
-        self.datafile_entries = '..\\'+ self.patientName + '\\' + 'response_entries.json'; 
-        self.datafile_treatments = '..\\'+ self.patientName + '\\' + 'response_treatments.json';
+        self.datafile_entries = fileNameEntries; #self.patientName + '\\' + 'response_entries.json'; 
+        self.datafile_treatments = fileNameTreatments; 
+        #self.datafile_treatments = self.patientName + '\\' + 'response_treatments.json';
         
         self.dfEntries = pd.DataFrame();
         self.dfTreatments = pd.DataFrame();
         
-        self.dfCGM = pd.DataFrame(columns=['dateTime', 'cgm', 'deltaTime']);
+        self.dfCGM   = pd.DataFrame(columns=['dateTime', 'cgm', 'deltaTime']);
         self.dfBolus = pd.DataFrame(columns=['dateTime', 'bolus'])
         self.dfCarbs = pd.DataFrame(columns=['dateTime', 'carbs'])
         self.dfBasal = pd.DataFrame(columns=['dateTime', 'basalRate', 'deltaTime'])
+        self.readData();
         
     def readData(self):
         if self.readFromFile == 1: 
@@ -39,11 +42,22 @@ class Reader:
             treatments = [];
             treatments = json.load(open(self.datafile_treatments));
         
-            self.dfEntries = pd.DataFrame.from_dict(entries)
-            self.dfTreatments = pd.DataFrame.from_dict(treatments)
+            self.dfEntries = pd.DataFrame.from_dict(entries);
+            self.dfTreatments = pd.DataFrame.from_dict(treatments);
             
             print('Reading files: ' + self.datafile_entries + ' and '+ self.datafile_treatments +' for ' + self.patientName)
-        #
+            print('Entry size: ' + str(len(entries)))
+            print('Treatment size: ' + str(len(treatments)))
+            print('Remove Treatments without timestamp')
+            
+            idxToRemove = self.dfTreatments['timestamp'].isnull();
+            idxToKeep   = idxToRemove; 
+            
+            #for kk in range(0,len(idxToRemove)):
+            #    idxToKeep[kk] = not(idxToRemove[kk])
+                
+            #self.dfTreatments = self.dfTreatments.iloc[idxToKeep.tolist()] 
+           
         return self.dfEntries, self.dfTreatments
     
     def createCGMStructure(self):
@@ -56,7 +70,13 @@ class Reader:
         
         tempOld = dt.time(0);
         for ii in range(0,len(self.dfEntries['dateString'])):
-            temp = dt.datetime.strptime(self.dfEntries['dateString'][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
+            try: 
+                temp = dt.datetime.strptime(self.dfEntries['dateString'][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
+            except:
+                print(self.dfEntries['dateString'])
+                print('ii: ' + str(ii))
+                temp = 0;
+                temp = dt.datetime.strptime('2019-11-01T22:04:25.814+0100', '%Y-%m-%dT%H:%M:%S.%fZ');
             self.dfCGM['dateTime'][ii]  = temp;
             if ii == 0:
                 print('inget')
@@ -67,20 +87,35 @@ class Reader:
             
         return self.dfCGM
     
-    def createBolusStructure(self): 
+    def createBolusStructure(self):     
         #Bolusself.dfb = pd.DataFrame(columns=['dateTime', 'bolus', 'basal'])
-        idx = np.isfinite(self.dfTreatments['insulin'])
+        # dfBolus = ['dateTime', 'bolus'])
+        self.dfBolus['dateTime'] = self.dfTreatments['timestamp']
         
-        idx = np.isfinite(self.dfTreatments['insulin']);
-        self.dfBolus['bolus'] = np.array(self.dfTreatments['insulin'][idx]);
+        for jj in range(0,len(self.dfBolus['dateTime'])):
+            if self.dfTreatments['eventType'][jj] == 'Correction Bolus' :
+                self.dfBolus['bolus'][jj] = self.dfTreatments['insulin'][jj]
+            elif self.dfTreatments['eventType'][jj] == 'Meal Bolus' :
+                 self.dfBolus['bolus'][jj] = self.dfTreatments['insulin'][jj]
+            else: 
+                 self.dfBolus['bolus'][jj] = 0;
+         
+        np.sum(self.dfBolus['bolus'])        
+                
+        return 1;
 
-        dateTemp = np.array(self.dfTreatments['timestamp'][idx]);
-        counter = 0;
-        for jj in dateTemp:
-            self.dfBolus['dateTime'][counter] = dt.datetime.strptime(jj, '%Y-%m-%dT%H:%M:%SZ');
-            counter = counter + 1;
-    
-        return self.dfBolus;
+    def createBasalRateStructure(self):
+        # Hitta alla rate != 0 och != Nan
+        rateV = self.dfTreatments['rate'].tolist();
+        idxNan = np.argwhere(np.isnan(rateV)).flatten();
+        for kk in range(0,len(idxNan)):
+            rateV[idxNan[kk]] = 0.0; 
+
+        # 
+        self.dfBasal['dateTime'] = self.dfTreatments['timestamp'];
+        self.dfBasal['basalRate']     = rateV;
+        
+        return 1; 
     
     def createCarbStructure(self):
         
@@ -88,21 +123,13 @@ class Reader:
         
         self.dfCarbs['carbs'] = np.array(self.dfTreatments['carbs'][idx]);
 
-        dateTemp = np.array(self.dfTreatments['timestamp'][idx]);
+        dateTemp = np.array(self.dfTreatments['timestamp'][idx]);   
         counter = 0;
         for jj in dateTemp:
             self.dfCarbs['dateTime'][counter] = dt.datetime.strptime(jj, '%Y-%m-%dT%H:%M:%SZ');
             counter = counter + 1;
         
-    def createBasalRateStructure(self):
-        idx = np.isfinite(self.dfTreatments['rate']);
-        self.dfBasal['basalRate'] = np.array(self.dfTreatments['rate'][idx]);
 
-        dateTemp = np.array(self.dfTreatments['timestamp'][idx]);
-        counter = 0;
-        for jj in dateTemp:
-            self.dfBasal['dateTime'][counter] = dt.datetime.strptime(jj, '%Y-%m-%dT%H:%M:%SZ');
-            counter = counter + 1;
 
         
         #tempNext = dt.datetime.strptime(self.dfTreatments['timestamp'][1], '%Y-%m-%dT%H:%M:%SZ');

@@ -21,11 +21,7 @@ import help_func
 
 if 1:
     # Read data for patient Aksel.
-    fileNameE = 'Aksel\\response_entries.json'; 
-    fileNameT = 'Aksel\\response_treatments.json'; 
-    reader = Reader.Reader('Paul', fileNameE, fileNameT);
-
-    akselReader = Reader.Reader('Aksel', fileNameE, fileNameT);
+    akselReader = Reader.Reader('.');
     akselReader.readData(); 
     
     akselReader.createCGMStructure();
