@@ -51,6 +51,4 @@ if analyzerTime.idxNight == idxNight_correct:
 else: 
     print('idxNight:    NOK')
     nFault2 = nFault2 + 1; 
-    
-# analyzerTime.idxDay; 
-# analyzerTime.idxNight; 
+   

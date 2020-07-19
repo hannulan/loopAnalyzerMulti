@@ -28,6 +28,8 @@ class Analyzer:
     rangeHyperLevel1 = [18*x for x in [10, 13.9]] #[10*18,13.9*18];
     rangeHyperLevel2 = [rangeHyperLevel1[1]];
     
+    timeCGMStableMin = 20;
+    timeCGMStableSec = timeCGMStableMin*60;
     #
     #  hypoL2  |  hypoL1    |    range         |  hyperL1    |  hyperL2
     # ---------|------------|-----------|------|-------------|------------- 
@@ -78,9 +80,12 @@ class Analyzer:
     tdd = 0; 
     
     
-    def __init__(self, patientName, dfCGM):
+    def __init__(self, patientName, numDayNight, dfCGM, dfInsulin):
         self.patientName = patientName;
-        self.dfCGM = dfCGM; 
+        self.numDayNight = numDayNight; 
+        self.dfCGM       = dfCGM; 
+        self.dfInsulin   = dfInsulin; 
+  
         # Calc idx night and day
         self.idxNight, self.idxDay, self.idxDay2 = self.findIdxNightDay();
         self.dfCGMNight = dfCGM.iloc[self.idxNight];
@@ -88,8 +93,6 @@ class Analyzer:
         self.dfCGMDay2  = dfCGM.iloc[self.idxDay2];
   
     def calcAllCGM(self):
-        
-        
         self.tir = self.calcTimeInXNew(self.dfCGM, self.tirLevel, '[]')  # [3.9 10]
         self.tit = self.calcTimeInXNew(self.dfCGM, self.titLevel, '[]') # [4 8]
         self.tihyperLevel1Value = self.calcTimeInXNew(self.dfCGM, self.rangeHyperLevel1, '[]');                                                # ]10 13.9] 
@@ -117,10 +120,11 @@ class Analyzer:
         self.cgmPGS  = 0; 
         self.cgmMAGE = 0; 
         
-        #cgmMean, cgmSD, cgmSCV = self.calcCGMVariation(self.dfCGMDay);
-        #self.cgmSDDay  = cgmSD; 
-        #cgmMean, cgmSD, cgmSCV = self.calcCGMVariation(self.dfCGMNight);
-        #self.cgmSDNight = cgmSD; 
+        # Calculate cgm values for day and nights
+        cgmMean, cgmSD, cgmSCV = self.calcCGMVariation(self.dfCGMDay);
+        self.cgmSDDay  = cgmSD; 
+        cgmMean, cgmSD, cgmSCV = self.calcCGMVariation(self.dfCGMNight);
+        self.cgmSDNight = cgmSD; 
 
         return 1; 
     
@@ -152,7 +156,14 @@ class Analyzer:
         return idxNight, idxDay, idxDay2    
    
     def calcAllInsulin(self):
-        self.tdd = 0; 
+        sumBolus  = np.sum(self.dfInsulin['bolus']); 
+        basal     = self.dfInsulin['rate'];
+        timeHours = self.dfInsulin['deltaTimeSec']/60/60;
+        sumBasal  = np.sum(basal*timeHours); 
+        
+        self.tdd = round(sumBasal/self.numDayNight, 4); 
+        
+        return 1;  
         
     def writeAll(self):
         ## Write result in text format to a file:     
@@ -183,7 +194,7 @@ class Analyzer:
         
         file_object.write('tirDag;  ' + str(self.tirDag) + ';\n');
         file_object.write('tirNatt; ' + str(self.tirNatt) + ';\n');
-        file_object.write('tdd; ' + str(self.tdd) + ';\n');
+        file_object.write('TDD genomsnitt; ' + str(self.tdd) + ';\n');
         file_object.close()
 
 # PGS
@@ -212,11 +223,12 @@ class Analyzer:
     def calcTimeInXNew(self, dfCGM, xRange, mode):
         # This functions calculation percentage of time in range. 
         # TODO: Remove time slots that are larger than 5 minutes
+        # TODO: Remove some self. which is there for debugging
         # idxInRange    = (dfCGM['cgm'] <=  xRange[1]) & (dfCGM['cgm'] >=  xRange[0])
         
         if not dfCGM.empty: #operator.not_(dfCGM.empty):
             if mode == '[]':
-                idxInRange    = (xRange[0] <= dfCGM['cgm']) & (dfCGM['cgm'] <=  xRange[1]); 
+                idxInRange    = (xRange[0] <= dfCGM['cgm']) & (dfCGM['cgm'] <=  xRange[1]) 
             elif mode == ']]':
                 idxInRange    = (xRange[0] <  dfCGM['cgm']) & (dfCGM['cgm'] <=  xRange[1]) 
             elif mode == '...[':
@@ -225,8 +237,36 @@ class Analyzer:
                 idxInRange    = (dfCGM['cgm'] > xRange[0]) 
             else:
                 idxInRange = [];
-            totTime = sum(dfCGM['deltaTime'][1:len(dfCGM)])
-            tix    = sum(dfCGM['deltaTime'][1:len(dfCGM)][idxInRange])/totTime;
+            
+            #### Här är kod som ska limitera tiden i vektorn timeTemp till timeCGMStableSec (20*60 sekunder just nu)
+            #### Det här funkar inte riktigt för alla fall utanjag får fel på rad 104 när jag anropar detta.
+            #### Rad 104: self.tihypoNightLevel1Value = self.calcTimeInXNew(self.dfCGMNight, self.rangeHypoLevel1, '[]'); # [3.0 3.8]
+            #### Felet beror nog på att nåt idx vektor är tom att koden inte tar hänsyn till detta. 
+                
+            #totTime  = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)])
+            self.timeTempAll = self.dfCGM['deltaTimeSec'];
+            self.timeTempAll.iloc[0] = 0; # Set deltaTime for the first (last) sample to zero since it is unknown. 
+            self.timeTempAll = np.minimum(self.timeTempAll, self.timeCGMStableSec)
+            
+            #self.timeTempInRange =  self.dfCGM['deltaTimeSec'][idxInRange]; #Denna rad funkar inte
+            self.timeTempInRange = self.dfCGM['deltaTimeSec']; ## Denna rad är en snabbfix för att koden inte ska krascha
+            self.timeTempInRange.iloc[0] = 0; # Set deltaTime for the first (last) sample to zero since it is unknown. 
+            self.timeTempInRange = np.minimum(self.timeTempInRange, self.timeCGMStableSec)
+        
+            #
+            self.totTime = sum(self.timeTempAll);
+            self.inTime  = sum(self.timeTempInRange);
+            tix = self.inTime/self.totTime;
+            
+            self.idxInRange = idxInRange; 
+            ########################################
+            #### Här slutar den koden. ####
+            #########################################
+            
+            
+            
+            totTime  = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)])
+            tix    = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)][idxInRange])/totTime;
             tix = round(tix, 4); 
         else:
             tix = 0; 
@@ -245,18 +285,18 @@ class Analyzer:
         idxBelowRange = dfCGM['cgm'] < xRange[0];
         idxInRange    = (dfCGM['cgm'] <=  xRange[1]) & (dfCGM['cgm'] >=  xRange[0])
         
-        totTime = sum(dfCGM['deltaTime'][1:len(dfCGM)])
+        totTime = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)])
         
-        timeAboveRange_per = sum(dfCGM['deltaTime'][1:len(dfCGM)][idxAboveRange])/totTime;
-        timeBelowRange_per = sum(dfCGM['deltaTime'][1:len(dfCGM)][idxBelowRange])/totTime;
-        timeInRange_per    = sum(dfCGM['deltaTime'][1:len(dfCGM)][idxInRange])/totTime;
+        timeAboveRange_per = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)][idxAboveRange])/totTime;
+        timeBelowRange_per = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)][idxBelowRange])/totTime;
+        timeInRange_per    = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)][idxInRange])/totTime;
         return timeAboveRange_per, timeBelowRange_per, timeInRange_per
     def basalBolusPercentage(self, dfBasal, dfBolus):
         # Thie function...
         
         totBolus = sum(dfBolus['bolus']);
         N = len(dfBasal);
-        totBasal = sum(dfBasal['basalRate'][1:N]*dfBasal['deltaTime'][1:N]/3600);
+        totBasal = sum(dfBasal['basalRate'][1:N]*dfBasal['deltaTimeSec'][1:N]/3600);
         tot = totBolus + totBasal; 
         basalPercentage = totBasal/tot; 
         bolusPercentage = totBolus/tot; 

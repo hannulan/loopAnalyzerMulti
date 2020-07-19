@@ -27,10 +27,12 @@ name = 'Daniel'
 tf = 'treatments_ex_nightscoutcaspian.json'
 
 
+  
+
 reader = Reader.Reader(name, ef, tf);
 reader.createCGMStructure();
 reader.createBolusStructure();
-reader.createBasalRateStructure();
+#reader.createBasalRateStructure();
 
 
 # self.dfTreatments.columns
