@@ -30,21 +30,16 @@ treatmentsFile = 'treatments2.json'
 entriesFile    = 'entries5.json'
 name = 'Daniel'
 # Datum: 2019-10-11 2019-10-13
+numDayNight = 2;
+timeCGMStableMin = 20; 
 
 
 daniel1T = '/Users/mattiasbrannstrom/Desktop/Hanna/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanielTreatments1011-1211_forstaOmgangen.json'
 danielJohanssonEntry1 = '/Users/mattiasbrannstrom/Desktop/Hanna/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanilEntries_forstaOmgangen.json'
 
-#readerDaniel1 = Reader.Reader('Daniel1', danielJohanssonEntry1, daniel1T);
-#readerDaniel1.readData();
-#entries = json.load(open(danielJohanssonEntry1))
-#readerDaniel1.createCGMStructure();
 
-readerTest  = Reader.Reader(name, entriesFile, treatmentsFile);
-readerTest.readData(); 
-dfCGM = readerTest.createCGMStructure();
-
-analyzer = Analyzer.Analyzer(name, dfCGM); 
+readerTest = Reader.Reader(name, entriesFile, treatmentsFile,  timeCGMStableMin);
+analyzer = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
 analyzer.calcAllCGM(); 
 #analyzer.calcAllInsulin();
 #analyzer.writeAll();
@@ -111,31 +106,38 @@ if analyzer.tirLevel == tirLevel_correct:
     print('tirLevel: OK')
 else:
     print('tirLevel: NOK')
+    nFault = nFault + 1; 
     
 if analyzer.tirLevel == tirLevel_correct:
     print('titLevel: OK')
 else:
     print('titLevel: NOK')
+    nFault = nFault + 1; 
     
 if analyzer.rangeHyperLevel1 == rangeHyperLevel1_correct:
     print('rangeHyperLevel1: OK')
 else:
     print('rangeHyperLevel1_correct: NOK')
+    nFault = nFault + 1; 
     
 if analyzer.rangeHyperLevel2 == rangeHyperLevel2_correct:
     print('rangeHyperLevel2: OK')
 else:
     print('rangeHyperLevel2_correct: NOK')
+    nFault = nFault + 1; 
 
 if analyzer.rangeHypoLevel1 == rangeHypoLevel1_correct:
     print('rangeHypoLevel1: OK')
 else:
     print('rangeHypoLevel1_correct: NOK')
+    nFault = nFault + 1; 
 
 if analyzer.rangeHypoLevel2 == rangeHypoLevel2_correct:
     print('rangeHypoLevel2: OK')
 else:
     print('rangeHypoLevel2_correct: NOK')
+    nFault = nFault + 1; 
 
 
-
+if nFault == 0: 
+    print("No error detected --- OK")

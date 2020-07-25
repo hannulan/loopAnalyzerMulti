@@ -28,8 +28,6 @@ class Analyzer:
     rangeHyperLevel1 = [18*x for x in [10, 13.9]] #[10*18,13.9*18];
     rangeHyperLevel2 = [rangeHyperLevel1[1]];
     
-    timeCGMStableMin = 20;
-    timeCGMStableSec = timeCGMStableMin*60;
     #
     #  hypoL2  |  hypoL1    |    range         |  hyperL1    |  hyperL2
     # ---------|------------|-----------|------|-------------|------------- 
@@ -80,7 +78,7 @@ class Analyzer:
     tdd = 0; 
     
     
-    def __init__(self, patientName, numDayNight, dfCGM, dfInsulin):
+    def __init__(self, patientName, numDayNight, dfCGM, dfInsulin, timeCGMStableMin):
         self.patientName = patientName;
         self.numDayNight = numDayNight; 
         self.dfCGM       = dfCGM; 
@@ -91,6 +89,8 @@ class Analyzer:
         self.dfCGMNight = dfCGM.iloc[self.idxNight];
         self.dfCGMDay   = dfCGM.iloc[self.idxDay];
         self.dfCGMDay2  = dfCGM.iloc[self.idxDay2];
+
+        self.timeCGMStableSec = timeCGMStableMin*60;
   
     def calcAllCGM(self):
         self.tir = self.calcTimeInXNew(self.dfCGM, self.tirLevel, '[]')  # [3.9 10]

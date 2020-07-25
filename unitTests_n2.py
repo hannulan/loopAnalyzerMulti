@@ -25,12 +25,14 @@ import help_func
 treatmentsFile = 'treatments2.json'
 entriesFile    = 'entries1_time.json'
 name = 'Daniel'
+timeCGMStableMin = 20; 
 
-readerTest  = Reader.Reader(name, entriesFile, treatmentsFile);
-readerTest.readData(); 
-dfCGM = readerTest.createCGMStructure();
+readerTest = Reader.Reader(name, entriesFile, treatmentsFile, timeCGMStableMin);
+analyzer = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
 
-analyzerTime = Analyzer.Analyzer(name, dfCGM); 
+analyzerTime = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
+
+#Analyzer.Analyzer(name, readerTest.dfCGM); 
 analyzerTime.calcAllCGM(); 
 
 
@@ -52,3 +54,5 @@ else:
     print('idxNight:    NOK')
     nFault2 = nFault2 + 1; 
    
+if nFault2 == 0: 
+    print("No fault detected --- OK")

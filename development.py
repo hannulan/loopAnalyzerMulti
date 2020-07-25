@@ -20,19 +20,25 @@ import Analyzer
 
 import help_func
 
+# Setting for everyone:
+timeCGMStableMin = 20; 
 
 
 ef = 'entries_ex_caspian.json';
 name = 'Daniel'
 tf = 'treatments_ex_nightscoutcaspian.json'
-
-
+startDate = dt.date(2020, 7, 6)
+stopDate = dt.date(2020, 7, 6)
   
 
-reader = Reader.Reader(name, ef, tf);
-reader.createCGMStructure();
-reader.createBolusStructure();
-#reader.createBasalRateStructure();
+reader = Reader.Reader(name, ef, tf, timeCGMStableMin);
+#reader.createCGMStructure();
+
+
+
+
+
+#reader.createInsulinStructure();
 
 
 # self.dfTreatments.columns

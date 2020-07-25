@@ -22,15 +22,16 @@ import Analyzer
 
 import help_func
 
+timeCGMStableMin = 20; 
 
 
 ef = 'entries_ex_caspian.json';
 name = 'Daniel'
 tf = 'treatments_ex_nightscoutcaspian.json'
 
-reader  = Reader.Reader(name, ef, tf);
+reader  = Reader.Reader(name, ef, tf, timeCGMStableMin);
 
-analyzer = Analyzer.Analyzer(name, reader.numDayNight, reader.dfCGM, reader.dfInsulin); 
+analyzer = Analyzer.Analyzer(name, reader.numDayNight, reader.dfCGM, reader.dfInsulin, timeCGMStableMin); 
 analyzer.calcAllCGM(); 
 
 analyzer.calcAllInsulin(); 
