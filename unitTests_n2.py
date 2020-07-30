@@ -22,23 +22,26 @@ import Analyzer
 
 import help_func
 
-treatmentsFile = 'treatments2.json'
-entriesFile    = 'entries1_time.json'
+treatmentsFile = 'testFiles/treatments2.json'
+entriesFile    = 'testFiles/entries1_time.json'
+
 name = 'Daniel'
 timeCGMStableMin = 20; 
 
 readerTest = Reader.Reader(name, entriesFile, treatmentsFile, timeCGMStableMin);
-analyzer = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
+analyzerTime = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.booleanWholeDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
 
-analyzerTime = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
 
 #Analyzer.Analyzer(name, readerTest.dfCGM); 
-analyzerTime.calcAllCGM(); 
+#analyzerTime.calcAllCGM(); 
 
 
 ## Correct values: 
+# Idx night and day test
 idxDay_correct = [0, 1, 2, 3, 4, 5]; 
 idxNight_correct = [10, 11, 12, 13]; 
+# PGS test
+PGS_correct = 12.2294;
 
 ## Checks:
 nFault2 = 0; 
@@ -53,6 +56,13 @@ if analyzerTime.idxNight == idxNight_correct:
 else: 
     print('idxNight:    NOK')
     nFault2 = nFault2 + 1; 
+    
+if PGS_correct == analyzerTime.cgmPGS:
+    print('cgmPGS:      OK')
+else:
+    print('cgmpPGS:     NOK')
+    nFault2 = nFault2 + 1; 
+
    
 if nFault2 == 0: 
     print("No fault detected --- OK")

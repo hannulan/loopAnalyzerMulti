@@ -26,8 +26,8 @@ import help_func
 # readData
 # createCGM
 
-treatmentsFile = 'treatments2.json'
-entriesFile    = 'entries5.json'
+treatmentsFile = 'testFiles/treatments2.json'
+entriesFile    = 'testFiles/entries5.json'
 name = 'Daniel'
 # Datum: 2019-10-11 2019-10-13
 numDayNight = 2;
@@ -39,7 +39,7 @@ danielJohanssonEntry1 = '/Users/mattiasbrannstrom/Desktop/Hanna/Dropbox/Diassist
 
 
 readerTest = Reader.Reader(name, entriesFile, treatmentsFile,  timeCGMStableMin);
-analyzer = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
+analyzer = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.booleanWholeDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
 analyzer.calcAllCGM(); 
 #analyzer.calcAllInsulin();
 #analyzer.writeAll();

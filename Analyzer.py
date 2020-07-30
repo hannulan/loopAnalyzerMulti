@@ -20,13 +20,14 @@ class Analyzer:
     # hyperLevel2
     
     tirLevel = [18*x for x in [3.9, 10]]; 
-    titLevel = [18*x for x in [4,8]]# [4*18, 8*18]; # Pythons way for 18*[4,8]; 
+    titLevel = [18*x for x in [4, 8]]# [4*18, 8*18]; # Pythons way for 18*[4,8]; 
     
     rangeHypoLevel1  = [18*x for x in [3.0, 3.8]] # [3.0, 3.8];
     rangeHypoLevel2  = [rangeHypoLevel1[0]];
     
     rangeHyperLevel1 = [18*x for x in [10, 13.9]] #[10*18,13.9*18];
     rangeHyperLevel2 = [rangeHyperLevel1[1]];
+    
     
     #
     #  hypoL2  |  hypoL1    |    range         |  hyperL1    |  hyperL2
@@ -60,6 +61,7 @@ class Analyzer:
     
     cgmSD   = 0; 
     cgmSCV  = 0; 
+    cgmGVP  = 0; 
     cgmPGS  = 0; 
     cgmMAGE = 0; 
     
@@ -78,12 +80,13 @@ class Analyzer:
     tdd = 0; 
     
     
-    def __init__(self, patientName, numDayNight, dfCGM, dfInsulin, timeCGMStableMin):
+    def __init__(self, patientName, numDayNight, boolDayNight, dfCGM, dfInsulin, timeCGMStableMin):
         self.patientName = patientName;
         self.numDayNight = numDayNight; 
         self.dfCGM       = dfCGM; 
         self.dfInsulin   = dfInsulin; 
-  
+        self.boolDayNight = boolDayNight; 
+        
         # Calc idx night and day
         self.idxNight, self.idxDay, self.idxDay2 = self.findIdxNightDay();
         self.dfCGMNight = dfCGM.iloc[self.idxNight];
@@ -91,6 +94,10 @@ class Analyzer:
         self.dfCGMDay2  = dfCGM.iloc[self.idxDay2];
 
         self.timeCGMStableSec = timeCGMStableMin*60;
+        
+        self.calcAllCGM(); 
+        
+        self.tdd = self.calcAllInsulin(self.dfInsulin, self.boolDayNight)
   
     def calcAllCGM(self):
         self.tir = self.calcTimeInXNew(self.dfCGM, self.tirLevel, '[]')  # [3.9 10]
@@ -114,10 +121,13 @@ class Analyzer:
         self.tirNightValue          = self.calcTimeInXNew(self.dfCGMDay, self.tirLevel, '[]') # [4 8]
     
         cgmMean, cgmSD, cgmSCV = self.calcCGMVariation(self.dfCGM);
-        self.cgmMean = round(cgmMean, 4);
-        self.cgmSD   = round(cgmSD, 4); 
-        self.cgmSCV  = round(cgmSCV, 4); 
-        self.cgmPGS  = 0; 
+        self.cgmMean = cgmMean;
+        self.cgmSD   = cgmSD; 
+        self.cgmSCV  = cgmSCV;
+        
+        self.cgmGVP = self.calcGVP(self.dfCGM);
+        
+        self.cgmPGS  = self.calcPGS(self.dfCGM, self.cgmGVP, self.cgmMean*18, self.tir, self.numDayNight); 
         self.cgmMAGE = 0; 
         
         # Calculate cgm values for day and nights
@@ -155,15 +165,18 @@ class Analyzer:
             
         return idxNight, idxDay, idxDay2    
    
-    def calcAllInsulin(self):
-        sumBolus  = np.sum(self.dfInsulin['bolus']); 
-        basal     = self.dfInsulin['rate'];
-        timeHours = self.dfInsulin['deltaTimeSec']/60/60;
+    def calcAllInsulin(self, dfInsulin, boolDayNight):
+        sumBolus  = np.sum(dfInsulin['bolus']); 
+        basal     = dfInsulin['rate'];
+        timeHours = dfInsulin['deltaTimeSec']/60/60;
         sumBasal  = np.sum(basal*timeHours); 
         
-        self.tdd = round(sumBasal/self.numDayNight, 4); 
-        
-        return 1;  
+        if boolDayNight:
+            tdd = round((sumBasal+sumBolus)/self.numDayNight, 4); 
+        else: 
+            tdd = 0; 
+            
+        return tdd;  
         
     def writeAll(self):
         ## Write result in text format to a file:     
@@ -197,26 +210,125 @@ class Analyzer:
         file_object.write('TDD genomsnitt; ' + str(self.tdd) + ';\n');
         file_object.close()
 
-# PGS
-# MAGE (medelamplitud hos glukosexkursioner)
+    def calcPGS(self, dfCGM, GVP, MG, PTIR, numDayNight):
         
-# Standarddevition, cgm, dagtid
-# Standarddevition, cgm, natt (2-7)
+        # PGS: 
+        # the glycemic variability, GVP
+        # mean glucose,
+        # percent time in range (70–180mg/dL),
+        # and incidence of hypoglycemic episodes per week deﬁned separately as 
+        # the number of episodes per week <= 54mg/dL and 
+        # the number of episodes < 70mg/dL and >= 55mg/dL. 
+        # Reference: https://pubmed.ncbi.nlm.nih.gov/28585873/
+                
+        # Tested N_54 = 2 and 6 
+        # Tested N_70 = 4 and 6
+        # Result as plots in reference
+        # Result:  4.1111107267264435 4.965316895174042
+        # Result: 2.9106 4.0534
+        
+        # Tested GVP = 0.40, 0.80 and 1.20
+        # Result as plots in reference
+        # Result:  3.0073720738402177 7.037526804202406 9.418170307425285    
+        
+        # Tested PTIR = 0.1 0.5 0.9
+        # Result: 9.79357349339474, 6.430987434173073, 1.4639979055645385
+        # Result as in reference
+            
+        # Tested MG = 50 90 110 190 240
+        # Result: 9.327081158011563, 2.052595742987335,  1.2302228345542954
+        #         9.565776416313424, 9.99540476009064
+                
+        numWeek = numDayNight/7; 
+        N_54 = self.counter(dfCGM['cgm'], 54)/numWeek
+        N_70 = self.counter(dfCGM['cgm'], 70)/numWeek - N_54; 
+        
+        F_54 = 0.5 + 4.5*(1 - np.exp(-0.81093*N_54));
+        
+        if N_70 <= 7.65:
+            F_70 = 0.5714*N_70 + 0.625; 
+        else:
+            F_70 = 5;
 
-# Antal basaljusteringar
-# Förhållande basal/bolus
-# Antal bolusar
+        
+        F_GVP  = 1 + 9*self.logisticFunc(100*GVP, 0.049, 65.47)
+        F_PTIR = 1 + 9*self.logisticFunc(100*PTIR, -0.0833, 55.04)
+        F_MG   = 1 + 9*self.logisticFunc(MG, -0.1139, 72.08) + 9*self.logisticFunc(MG, 0.09195, 157.57)
+        
+        PGS = F_54 + F_70 + F_GVP + F_PTIR + F_MG; 
+        if GVP == -1:
+            PGS = -1
+            
+        PGS = round(PGS, 4);
 
-# Vikt/totalt     
-#
-# Ätna kolhydrater (?). Loggade
-    def calcPGS(self, dfCGM):
-        print('calcPGS')
+        return PGS
+    
+    def logisticFunc(self, x, steepness, offset):
+        # Calc logistic function, https://en.wikipedia.org/wiki/Logistic_function
+        # steepness = k in wikipedia article
+        # offset = x0 in wikipedia article
+
+        return 1/(1+np.exp(-steepness*(x-offset)))
+    
+    def counter(self, cgm, limit):
+        flag = False; 
+        count = 0; 
+        hyst = 9; 
+        for ii in range(0, len(cgm)):
+            if cgm[ii] < limit and flag == False:
+                count = count + 1;
+                flag = True
+            elif cgm[ii] >= (limit + hyst):
+                flag = False
+         
+        return count
+        
+    
+    def calcGVP(self, dfCGM):
+        # Calculate GVP, Glucose variability percentage, based om mg/dL and time in minutes
+        # Reference: https://pubmed.ncbi.nlm.nih.gov/29227755/
+        # IMPORTANT TO USE CORRECT UNITS!
+        # Time: [minute]
+        # cgm: [mg/dL]
+
+        # L = sum{sqrt(dt_i^2 + dcgm_i^2)}          L = sum{sqrt(dx_i^2 + dy_i^2)}
+        # L0 = sum{dt_i}                            L0 = sum{dx_i}
+        # GVP = (L/L0 - 1)*100
+        
+        # L0 = sum{dt_i}                            L0 = sum{dx_i}
+        # GVP = (L/L0 - 1)*100
+        
+        # L = sum{sqrt(dt_i^2 + dcgm_i^2)}
+        # L = sum(sqrt{deltaTimeSec/60^2 + dcgm_mg_dL^2})
+        
+        deltaCGM = -np.diff(dfCGM['cgm'])
+        
+        N = len(dfCGM['deltaTimeSec']);
+        
+        LAll = np.square(dfCGM['deltaTimeSec'][1:N]/60) + np.square(deltaCGM)
+        LAll = LAll.to_numpy();
+        LAll = np.sqrt(np.double(LAll));
+        
+        idx  = dfCGM['deltaTimeSec'] < self.timeCGMStableSec
+        
+        L = sum(LAll[idx[1:N]])  # LAll has one element less than dfCGM and hence idx. Due to diff calc of cgm-values
+        
+        L0All = dfCGM['deltaTimeSec'][1:N]/60
+        
+        L0 = sum(L0All[idx])
+        
+        if L0 == 0:
+            GVP = -1
+        else: 
+            GVP = (L/L0 - 1);
+        
+        GVP = round(GVP, 4);
+        return GVP
         
     def calcCGMVariation(self, df):
-        stdCGM  = np.std(df['cgm'], ddof=1)/18;
-        meanCGM = np.mean(df['cgm'])/18;
-        cgmSCV = stdCGM/meanCGM;
+        stdCGM  = round(np.std(df['cgm'], ddof=1)/18, 4);
+        meanCGM = round(np.mean(df['cgm'])/18, 4);
+        cgmSCV  = round(stdCGM/meanCGM, 4);
         
         return meanCGM, stdCGM, cgmSCV 
     
@@ -238,35 +350,12 @@ class Analyzer:
             else:
                 idxInRange = [];
             
-            #### Här är kod som ska limitera tiden i vektorn timeTemp till timeCGMStableSec (20*60 sekunder just nu)
-            #### Det här funkar inte riktigt för alla fall utanjag får fel på rad 104 när jag anropar detta.
-            #### Rad 104: self.tihypoNightLevel1Value = self.calcTimeInXNew(self.dfCGMNight, self.rangeHypoLevel1, '[]'); # [3.0 3.8]
-            #### Felet beror nog på att nåt idx vektor är tom att koden inte tar hänsyn till detta. 
-                
-            #totTime  = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)])
-            self.timeTempAll = self.dfCGM['deltaTimeSec'];
-            self.timeTempAll.iloc[0] = 0; # Set deltaTime for the first (last) sample to zero since it is unknown. 
-            self.timeTempAll = np.minimum(self.timeTempAll, self.timeCGMStableSec)
+            delta = dfCGM['deltaTimeSec'];
+            delta.iloc[0] = 0; # Set deltaTime for the first (last) sample to zero since it is unknown. 
+            deltaNew = np.minimum(delta,self. timeCGMStableSec)
+            totTime = sum(deltaNew);
             
-            #self.timeTempInRange =  self.dfCGM['deltaTimeSec'][idxInRange]; #Denna rad funkar inte
-            self.timeTempInRange = self.dfCGM['deltaTimeSec']; ## Denna rad är en snabbfix för att koden inte ska krascha
-            self.timeTempInRange.iloc[0] = 0; # Set deltaTime for the first (last) sample to zero since it is unknown. 
-            self.timeTempInRange = np.minimum(self.timeTempInRange, self.timeCGMStableSec)
-        
-            #
-            self.totTime = sum(self.timeTempAll);
-            self.inTime  = sum(self.timeTempInRange);
-            tix = self.inTime/self.totTime;
-            
-            self.idxInRange = idxInRange; 
-            ########################################
-            #### Här slutar den koden. ####
-            #########################################
-            
-            
-            
-            totTime  = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)])
-            tix    = sum(dfCGM['deltaTimeSec'][1:len(dfCGM)][idxInRange])/totTime;
+            tix = sum(np.minimum(deltaNew[idxInRange], self.timeCGMStableSec))/totTime;
             tix = round(tix, 4); 
         else:
             tix = 0; 

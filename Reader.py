@@ -38,7 +38,7 @@ class Reader:
         
         self.readData();
         self.createCGMStructure(); 
-        self.createInsulinStructure();
+        self.dfInsulin = self.createInsulinStructure();
         
         self.numDayNight, self.booleanWholeDayNight, self.dfCGM, self.dfInsulin = self.fixData(); # Remove to that only whole day/nigth periods are in data series.
         
@@ -54,10 +54,9 @@ class Reader:
             self.dfEntries = pd.DataFrame.from_dict(entries);
             self.dfTreatments = pd.DataFrame.from_dict(treatments);
             
-            print('Reading files: ' + self.datafile_entries + ' and '+ self.datafile_treatments +' for ' + self.patientName)
-            print('Entry size: ' + str(len(entries)))
-            print('Treatment size: ' + str(len(treatments)))
-            print('Remove Treatments without timestamp')
+            #print('Reading files: ' + self.datafile_entries + ' and '+ self.datafile_treatments +' for ' + self.patientName)
+            #print('Entry size: ' + str(len(entries)))
+            #print('Treatment size: ' + str(len(treatments)))
             
             self.idxToRemove = self.dfTreatments['timestamp'].isnull();
             self.dfTreatments = self.dfTreatments[~self.idxToRemove]; # Remove all rows with timestamp = nan
@@ -68,21 +67,22 @@ class Reader:
         return self.dfEntries, self.dfTreatments
      
     def createInsulinStructure(self):     
-          
-          self.dfInsulin['rate'] = self.dfTreatments['rate']
+          dfIns = pd.DataFrame(columns=['dateTime', 'bolus', 'rate', 'carbs', 'deltaTimeSec'])
+          dfIns['rate'] = self.dfTreatments['rate']
+          dfIns['carbs'] = self.dfTreatments['carbs']
           
           " Create bolus rows for all Correction and meal boluses "
           # TODO: Double check if this also includes the micro boluses
-          for jj in range(0,len(self.dfInsulin['dateTime'])):
+          for jj in range(0,len(dfIns['dateTime'])):
               if self.dfTreatments['eventType'][jj] == 'Correction Bolus' :
-                  self.dfInsulin['bolus'][jj] = self.dfTreatments['insulin'][jj]
+                  dfIns['bolus'][jj] = self.dfTreatments['insulin'][jj]
               elif self.dfTreatments['eventType'][jj] == 'Meal Bolus' :
                   if np.isnan(self.dfTreatments['insulin'][jj]) :
-                      self.dfInsulin['bolus'][jj] = 0
+                      dfIns['bolus'][jj] = 0
                   else:
-                      self.dfInsulin['bolus'][jj] = self.dfTreatments['insulin'][jj]
+                      dfIns['bolus'][jj] = self.dfTreatments['insulin'][jj]
               else: 
-                  self.dfInsulin['bolus'][jj] = 0;     
+                  dfIns['bolus'][jj] = 0;     
           
           " Calculate deltatimeSec for each row "
           tempOld = dt.time(0);
@@ -90,33 +90,42 @@ class Reader:
             try: 
                 temp = dt.datetime.strptime(self.dfTreatments['timestamp'][ii], '%Y-%m-%dT%H:%M:%S%fZ');
             except:
-                print(self.dfEntries['dateString'])
-                print('ii: ' + str(ii))
                 temp = 0;
                 temp = dt.datetime.strptime('2019-11-01T22:04:25.814+0100', '%Y-%m-%dT%H:%M:%S.%fZ');
-            self.dfInsulin['dateTime'][ii]  = temp;
+            dfIns['dateTime'][ii]  = temp;
             if ii == 0:
-                print('hej')
+                dfIns['deltaTimeSec'][ii] = 0;
             else:
                 sec = tempOld - temp;
-                self.dfInsulin['deltaTimeSec'][ii] = sec.total_seconds();
+                dfIns['deltaTimeSec'][ii] = sec.total_seconds();
             tempOld = temp; 
-          
-          #self.idxRate = ~self.dfTemp.isin([0])
-          idxRateNan = self.dfInsulin['rate'].isna()
-          self.dfInsulin['rate'][idxRateNan] = 0
+          " Done with deltaTimeSec " 
+           
+          # Assign all carbs that are nan to 0
+          idxCarbsNan = dfIns['carbs'].isna()
+          dfIns['carbs'][idxCarbsNan] = 0
            
           idx = list();  
-          for ii in range(0,len(self.dfInsulin['rate'])):
-              if self.dfInsulin['rate'][ii] == 0:
-                  idx.append(ii);
+          # for ii in range(0,len(dfIns['rate'])):
+          #     if dfIns['rate'][ii] == 0:
+          #         idx.append(ii);
+          #     else:
+          #         rateNow = dfIns['rate'][ii];
+          #         while len(idx) > 0: 
+          #             dfIns['rate'][idx.pop()] = rateNow; 
+          #         idx = list();  
+          
+          ii = len(dfIns['rate']) - 1; 
+          rateNow = None; 
+          nanVector = dfIns['rate'].isna()          
+          while ii >= 0 : 
+              if nanVector[ii] == True :
+                  dfIns['rate'][ii] = rateNow;   
               else:
-                  rateNow = self.dfInsulin['rate'][ii];
-                  while len(idx) > 0: 
-                      self.dfInsulin['rate'][idx.pop()] = rateNow; 
-                  idx = list();     
+                  rateNow = dfIns['rate'][ii];
+              ii = ii -1;    
               
-          return self.dfInsulin;
+          return dfIns;
    
     def createCGMStructure(self):
         self.dfCGM = pd.DataFrame(columns=['dateTime', 'cgm', 'deltaTimeSec'])
@@ -131,13 +140,12 @@ class Reader:
             try: 
                 temp = dt.datetime.strptime(self.dfEntries['dateString'][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
             except:
-                print(self.dfEntries['dateString'])
-                print('ii: ' + str(ii))
                 temp = 0;
                 temp = dt.datetime.strptime('2019-11-01T22:04:25.814+0100', '%Y-%m-%dT%H:%M:%S.%fZ');
             self.dfCGM['dateTime'][ii]  = temp;
             if ii == 0:
-                print('inget')
+                #print('inget')
+                j = 0; 
             else:
                 sec = tempOld - temp;
                 self.dfCGM['deltaTimeSec'][ii] = sec.total_seconds();
@@ -172,12 +180,11 @@ class Reader:
         numDayNight = diffDate.days + 1;  
         
         newCGM = self.dfCGM.iloc[stopIdxCGM:startIdxCGM+1];
-        newCGM.reset_index(inplace = True);
+        newCGM = newCGM.reset_index();
         
         idx2 = (self.dfInsulin['dateTime'] >= startD) & (self.dfInsulin['dateTime'] <= stopD)
         newInsulin = self.dfInsulin[idx2];
-        newInsulin.reset_index(inplace = True)
-        
+        newInsulin = newInsulin.reset_index()
         
         # Find all index where (date >= startDate) & (date <= stopDate)
         # Remove this code because it is not tested. Will probably work   
