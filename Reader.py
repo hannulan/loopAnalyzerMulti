@@ -16,7 +16,8 @@ import datetime as dt
 class Reader: 
    
     
-    def __init__(self, patientName, fileNameEntries, fileNameTreatments, timeCGMStableMin):
+    def __init__(self, patientName, fileNameEntries, fileNameTreatments, timeCGMStableMin, timeStrT):
+
         self.patientName = patientName; 
         self.readFromFile = 1; 
         self.patientName = patientName;
@@ -36,13 +37,18 @@ class Reader:
         #self.dfCarbs = pd.DataFrame(columns=['dateTime', 'carbs'])
         #self.dfBasal = pd.DataFrame(columns=['dateTime', 'basalRate', 'deltaTimeSec'])
         
-        self.readData();
-        self.createCGMStructure(); 
-        self.dfInsulin = self.createInsulinStructure();
+        self.dfEntries, self.dfTreatments, timeStampStr = self.readData(timeStrT);
+        self.dfCGM = self.createCGMStructure(self.dfEntries); 
+        self.dfInsulin = self.createInsulinStructure(self.dfTreatments, timeStampStr);
         
+        print('size dfCGM: ' + str(len(self.dfCGM)))
+        print('size dfInsulin: ' + str(len(self.dfInsulin)))
+
         self.numDayNight, self.booleanWholeDayNight, self.dfCGM, self.dfInsulin = self.fixData(); # Remove to that only whole day/nigth periods are in data series.
-        
-    def readData(self):
+        print('size dfCGM, efter fix: ' + str(len(self.dfCGM)))
+        print('size dfInsulin, efter fix: ' + str(len(self.dfInsulin)))
+
+    def readData(self, timeStrT):
         if self.readFromFile == 1: 
                     
             entries = [];
@@ -51,47 +57,64 @@ class Reader:
             treatments = [];
             treatments = json.load(open(self.datafile_treatments, encoding="utf8"));
         
-            self.dfEntries = pd.DataFrame.from_dict(entries);
-            self.dfTreatments = pd.DataFrame.from_dict(treatments);
+            dfE = pd.DataFrame.from_dict(entries);
+            dfT = pd.DataFrame.from_dict(treatments);
             
-            #print('Reading files: ' + self.datafile_entries + ' and '+ self.datafile_treatments +' for ' + self.patientName)
-            #print('Entry size: ' + str(len(entries)))
-            #print('Treatment size: ' + str(len(treatments)))
+            print('Reading files: ' + self.datafile_entries + ' and '+ self.datafile_treatments +' for ' + self.patientName)
+            print('Entry size: ' + str(len(entries)))
+            print('Treatment size: ' + str(len(treatments)))
             
-            self.idxToRemove = self.dfTreatments['timestamp'].isnull();
-            self.dfTreatments = self.dfTreatments[~self.idxToRemove]; # Remove all rows with timestamp = nan
-            self.dfTreatments.reset_index(inplace = True)
+            print('Treatment Pandas size: ' + str(len(dfT)))
+            print('Entry Pandas size size: ' + str(len(dfE)))
+
+            # try: 
+            #     idxToRemove = dfT['timestamp'].isnull();
+            #     timeStampStr = 'timestamp'
+            # except: 
+            #     idxToRemove = dfT['created_at'].isnull();
+            #     timeStampStr = 'created_at'
+               
+            idxToRemove = dfT[timeStrT].isnull();
+            timeStampStr =  timeStrT;   
+            dfT = dfT[~idxToRemove]; # Remove all rows with timestamp = nan
+            dfT.reset_index(inplace = True)
             
-            #self.idxNanRate = self.dfTreatments['rate'].isnull(); # Det här tilldelar alla kolumne
-            #self.dfTreatments[self.idxNanRate] = 0; 
-        return self.dfEntries, self.dfTreatments
+            print('Treatment size after remove: ' + str(len(dfT)))
+
+        return dfE, dfT, timeStampStr
      
-    def createInsulinStructure(self):     
+    def createInsulinStructure(self, dfT, timeStampStr):     
           dfIns = pd.DataFrame(columns=['dateTime', 'bolus', 'rate', 'carbs', 'deltaTimeSec'])
-          dfIns['rate'] = self.dfTreatments['rate']
-          dfIns['carbs'] = self.dfTreatments['carbs']
+          dfIns['rate'] = dfT['rate']
+          dfIns['carbs'] = dfT['carbs']
           
           " Create bolus rows for all Correction and meal boluses "
           # TODO: Double check if this also includes the micro boluses
           for jj in range(0,len(dfIns['dateTime'])):
-              if self.dfTreatments['eventType'][jj] == 'Correction Bolus' :
-                  dfIns['bolus'][jj] = self.dfTreatments['insulin'][jj]
-              elif self.dfTreatments['eventType'][jj] == 'Meal Bolus' :
-                  if np.isnan(self.dfTreatments['insulin'][jj]) :
+              if dfT['eventType'][jj] == 'Correction Bolus' :
+                  dfIns['bolus'][jj] = dfT['insulin'][jj]
+              elif dfT['eventType'][jj] == 'Meal Bolus' :
+                  if np.isnan(dfT['insulin'][jj]) :
                       dfIns['bolus'][jj] = 0
                   else:
-                      dfIns['bolus'][jj] = self.dfTreatments['insulin'][jj]
+                      dfIns['bolus'][jj] = dfT['insulin'][jj]
               else: 
                   dfIns['bolus'][jj] = 0;     
           
           " Calculate deltatimeSec for each row "
           tempOld = dt.time(0);
-          for ii in range(0,len(self.dfTreatments['timestamp'])):
+          for ii in range(0,len(dfT[timeStampStr])):
             try: 
-                temp = dt.datetime.strptime(self.dfTreatments['timestamp'][ii], '%Y-%m-%dT%H:%M:%S%fZ');
+                temp = dt.datetime.strptime(dfT[timeStampStr][ii], '%Y-%m-%dT%H:%M:%S%fZ');
             except:
+                #print('ii: ' + str(ii))
                 temp = 0;
-                temp = dt.datetime.strptime('2019-11-01T22:04:25.814+0100', '%Y-%m-%dT%H:%M:%S.%fZ');
+                #temp = dt.datetime.strptime('2019-11-01T22:04:25.+0100', '%Y-%m-%dT%H:%M:%S.%fZ');
+                try:
+                    temp = dt.datetime.strptime(dfT[timeStampStr][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
+                except: 
+                    temp = dt.datetime.strptime(dfT['created_at'][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
+
             dfIns['dateTime'][ii]  = temp;
             if ii == 0:
                 dfIns['deltaTimeSec'][ii] = 0;
@@ -127,21 +150,26 @@ class Reader:
               
           return dfIns;
    
-    def createCGMStructure(self):
+    def createCGMStructure(self, dfE):
         self.dfCGM = pd.DataFrame(columns=['dateTime', 'cgm', 'deltaTimeSec'])
-        self.dfCGM['cgm'] = self.dfEntries['sgv']
+        self.dfCGM['cgm'] = dfE['sgv']
         
-        if len(self.dfEntries['sgv']) != len(self.dfEntries['dateString']):
+        if len(dfE['sgv']) != len(dfE['dateString']):
             print('Error in createCGMStructure')
             return
         
         tempOld = dt.time(0);
-        for ii in range(0,len(self.dfEntries['dateString'])):
+        for ii in range(0,len(dfE['dateString'])):
+            
             try: 
-                temp = dt.datetime.strptime(self.dfEntries['dateString'][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
+                temp = dt.datetime.strptime(dfE['dateString'][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
             except:
+                #print('ii: '  + str(ii))
                 temp = 0;
-                temp = dt.datetime.strptime('2019-11-01T22:04:25.814+0100', '%Y-%m-%dT%H:%M:%S.%fZ');
+                #print(dfE['dateString'][ii-1])
+                #print(dfE['dateString'][ii])
+                temp = dt.datetime.strptime(dfE['dateString'][ii], '%Y-%m-%dT%H:%M:%S.%f+0100');
+                #temp = dt.datetime.strptime('2019-11-01T22:04:25.814+0100', '%Y-%m-%dT%H:%M:%S.%fZ');
             self.dfCGM['dateTime'][ii]  = temp;
             if ii == 0:
                 #print('inget')

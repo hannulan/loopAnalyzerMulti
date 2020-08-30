@@ -18,8 +18,6 @@ import datetime as dt
 import Reader
 import Analyzer
 
-import help_func
-
 ## Unit tests: 
 
 # Reader: 
@@ -34,12 +32,14 @@ numDayNight = 2;
 timeCGMStableMin = 20; 
 
 
+pd.set_option('mode.chained_assignment', None)
+
 daniel1T = '/Users/mattiasbrannstrom/Desktop/Hanna/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanielTreatments1011-1211_forstaOmgangen.json'
 danielJohanssonEntry1 = '/Users/mattiasbrannstrom/Desktop/Hanna/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanilEntries_forstaOmgangen.json'
 
 
 readerTest = Reader.Reader(name, entriesFile, treatmentsFile,  timeCGMStableMin);
-analyzer = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.booleanWholeDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
+analyzer = Analyzer.Analyzer(name, readerTest);
 analyzer.calcAllCGM(); 
 #analyzer.calcAllInsulin();
 #analyzer.writeAll();

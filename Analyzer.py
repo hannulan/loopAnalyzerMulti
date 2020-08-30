@@ -6,7 +6,7 @@ Created on Mon Jul 15 16:38:19 2019
 """
 import numpy as np
 import datetime as dt
-import help_func
+
 
 class Analyzer: 
     patientName = ''; 
@@ -80,24 +80,24 @@ class Analyzer:
     tdd = 0; 
     
     
-    def __init__(self, patientName, numDayNight, boolDayNight, dfCGM, dfInsulin, timeCGMStableMin):
+    def __init__(self, patientName, reader):
         self.patientName = patientName;
-        self.numDayNight = numDayNight; 
-        self.dfCGM       = dfCGM; 
-        self.dfInsulin   = dfInsulin; 
-        self.boolDayNight = boolDayNight; 
+        self.numDayNight = reader.numDayNight; 
+        self.dfCGM       = reader.dfCGM; 
+        self.dfInsulin   = reader.dfInsulin; 
+        self.booleanWholeDayNight = reader.booleanWholeDayNight; 
         
         # Calc idx night and day
         self.idxNight, self.idxDay, self.idxDay2 = self.findIdxNightDay();
-        self.dfCGMNight = dfCGM.iloc[self.idxNight];
-        self.dfCGMDay   = dfCGM.iloc[self.idxDay];
-        self.dfCGMDay2  = dfCGM.iloc[self.idxDay2];
+        self.dfCGMNight = self.dfCGM.iloc[self.idxNight];
+        self.dfCGMDay   = self.dfCGM.iloc[self.idxDay];
+        self.dfCGMDay2  = self.dfCGM.iloc[self.idxDay2];
 
-        self.timeCGMStableSec = timeCGMStableMin*60;
+        self.timeCGMStableSec = reader.timeCGMStableSec;
         
         self.calcAllCGM(); 
         
-        self.tdd = self.calcAllInsulin(self.dfInsulin, self.boolDayNight)
+        self.tdd = self.calcAllInsulin(self.dfInsulin, self.booleanWholeDayNight)
   
     def calcAllCGM(self):
         self.tir = self.calcTimeInXNew(self.dfCGM, self.tirLevel, '[]')  # [3.9 10]
@@ -165,13 +165,13 @@ class Analyzer:
             
         return idxNight, idxDay, idxDay2    
    
-    def calcAllInsulin(self, dfInsulin, boolDayNight):
+    def calcAllInsulin(self, dfInsulin, booleanWholeDayNight):
         sumBolus  = np.sum(dfInsulin['bolus']); 
         basal     = dfInsulin['rate'];
         timeHours = dfInsulin['deltaTimeSec']/60/60;
         sumBasal  = np.sum(basal*timeHours); 
         
-        if boolDayNight:
+        if booleanWholeDayNight:
             tdd = round((sumBasal+sumBolus)/self.numDayNight, 4); 
         else: 
             tdd = 0; 
