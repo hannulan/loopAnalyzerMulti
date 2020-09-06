@@ -1,0 +1,874 @@
+{
+	"_type": "Project",
+	"_id": "AAAAAAFF+h6SjaM2Hec=",
+	"name": "Untitled",
+	"ownedElements": [
+		{
+			"_type": "UMLModel",
+			"_id": "AAAAAAFF+qBWK6M3Z8Y=",
+			"_parent": {
+				"$ref": "AAAAAAFF+h6SjaM2Hec="
+			},
+			"name": "Model",
+			"ownedElements": [
+				{
+					"_type": "UMLClassDiagram",
+					"_id": "AAAAAAFF+qBtyKM79qY=",
+					"_parent": {
+						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
+					},
+					"name": "Main",
+					"defaultDiagram": true,
+					"ownedViews": [
+						{
+							"_type": "UMLClassView",
+							"_id": "AAAAAAF0QHF6MbICXOQ=",
+							"_parent": {
+								"$ref": "AAAAAAFF+qBtyKM79qY="
+							},
+							"model": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"subViews": [
+								{
+									"_type": "UMLNameCompartmentView",
+									"_id": "AAAAAAF0QHF6MrID8wA=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHF6MbICXOQ="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QHF6LrIAXRA="
+									},
+									"subViews": [
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAF0QHF6MrIEO6w=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrID8wA="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": 1088,
+											"top": 672,
+											"height": 13
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAF0QHF6MrIFWEo=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrID8wA="
+											},
+											"font": "Arial;13;1",
+											"left": 549,
+											"top": 343,
+											"width": 303,
+											"height": 13,
+											"text": "Reader",
+											"wordWrap": true
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAF0QHF6MrIGQuE=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrID8wA="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": 1088,
+											"top": 672,
+											"width": 73.67724609375,
+											"height": 13,
+											"text": "(from Model)"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAF0QHF6MrIHvZ4=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrID8wA="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": 1088,
+											"top": 672,
+											"horizontalAlignment": 1,
+											"wordWrap": true
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 544,
+									"top": 336,
+									"width": 313,
+									"height": 25,
+									"stereotypeLabel": {
+										"$ref": "AAAAAAF0QHF6MrIEO6w="
+									},
+									"nameLabel": {
+										"$ref": "AAAAAAF0QHF6MrIFWEo="
+									},
+									"namespaceLabel": {
+										"$ref": "AAAAAAF0QHF6MrIGQuE="
+									},
+									"propertyLabel": {
+										"$ref": "AAAAAAF0QHF6MrIHvZ4="
+									}
+								},
+								{
+									"_type": "UMLAttributeCompartmentView",
+									"_id": "AAAAAAF0QHF6MrIItqQ=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHF6MbICXOQ="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QHF6LrIAXRA="
+									},
+									"subViews": [
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAF0QHhAQbKU6bg=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrIItqQ="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QHhADbKRcwk="
+											},
+											"font": "Arial;13;0",
+											"left": 549,
+											"top": 366,
+											"width": 303,
+											"height": 13,
+											"text": "+patientName",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAF0QHH5ZbIv938=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrIItqQ="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QHH5K7Isva0="
+											},
+											"font": "Arial;13;0",
+											"left": 549,
+											"top": 381,
+											"width": 303,
+											"height": 13,
+											"text": "+dfCGM",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAF0QHVebLJa0+c=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrIItqQ="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QHVeOLJXtM8="
+											},
+											"font": "Arial;13;0",
+											"left": 549,
+											"top": 396,
+											"width": 303,
+											"height": 13,
+											"text": "+dfInsulin",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 544,
+									"top": 361,
+									"width": 313,
+									"height": 53
+								},
+								{
+									"_type": "UMLOperationCompartmentView",
+									"_id": "AAAAAAF0QHF6MrIJR88=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHF6MbICXOQ="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QHF6LrIAXRA="
+									},
+									"subViews": [
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QHdcorJ73eo=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrIJR88="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QHdcarJ4zo4="
+											},
+											"font": "Arial;13;0",
+											"left": 549,
+											"top": 419,
+											"width": 303,
+											"height": 65,
+											"autoResize": true,
+											"text": "+__init__(patientName, fileNameEntries, fileNameTreatments, timeCGMStableMin, timeStrT)",
+											"horizontalAlignment": 0,
+											"wordWrap": true
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QHIVFLI1xq0=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrIJR88="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QHIU5LIyQLI="
+											},
+											"font": "Arial;13;0",
+											"left": 549,
+											"top": 486,
+											"width": 303,
+											"height": 13,
+											"text": "+readData(timeStrT)",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QHPkY7I8fGo=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrIJR88="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QHPkMrI5Qqg="
+											},
+											"font": "Arial;13;0",
+											"left": 549,
+											"top": 501,
+											"width": 303,
+											"height": 13,
+											"text": "+createInsulinStructure()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QHQuSrJDqRY=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrIJR88="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QHQuF7JAfgs="
+											},
+											"font": "Arial;13;0",
+											"left": 549,
+											"top": 516,
+											"width": 303,
+											"height": 13,
+											"text": "+createCGMStructure()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QHRGmrJJ3xI=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrIJR88="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QHRGaLJG81o="
+											},
+											"font": "Arial;13;0",
+											"left": 549,
+											"top": 531,
+											"width": 303,
+											"height": 13,
+											"text": "+fixData()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QHS+t7JSwvE=",
+											"_parent": {
+												"$ref": "AAAAAAF0QHF6MrIJR88="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QHS+h7JPcoo="
+											},
+											"font": "Arial;13;0",
+											"left": 549,
+											"top": 546,
+											"width": 303,
+											"height": 13,
+											"text": "+findWholsDayNight()",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 544,
+									"top": 414,
+									"width": 313,
+									"height": 150
+								},
+								{
+									"_type": "UMLReceptionCompartmentView",
+									"_id": "AAAAAAF0QHF6M7IK5FI=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHF6MbICXOQ="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QHF6LrIAXRA="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": 544,
+									"top": 336,
+									"width": 10,
+									"height": 10
+								},
+								{
+									"_type": "UMLTemplateParameterCompartmentView",
+									"_id": "AAAAAAF0QHF6M7ILE8Y=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHF6MbICXOQ="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QHF6LrIAXRA="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": 544,
+									"top": 336,
+									"width": 10,
+									"height": 10
+								}
+							],
+							"font": "Arial;13;0",
+							"containerChangeable": true,
+							"left": 544,
+							"top": 336,
+							"width": 313,
+							"height": 297,
+							"nameCompartment": {
+								"$ref": "AAAAAAF0QHF6MrID8wA="
+							},
+							"wordWrap": true,
+							"attributeCompartment": {
+								"$ref": "AAAAAAF0QHF6MrIItqQ="
+							},
+							"operationCompartment": {
+								"$ref": "AAAAAAF0QHF6MrIJR88="
+							},
+							"receptionCompartment": {
+								"$ref": "AAAAAAF0QHF6M7IK5FI="
+							},
+							"templateParameterCompartment": {
+								"$ref": "AAAAAAF0QHF6M7ILE8Y="
+							}
+						},
+						{
+							"_type": "UMLClassView",
+							"_id": "AAAAAAF0QH1ISLMpIwo=",
+							"_parent": {
+								"$ref": "AAAAAAFF+qBtyKM79qY="
+							},
+							"model": {
+								"$ref": "AAAAAAF0QH1IR7Mnhp0="
+							},
+							"subViews": [
+								{
+									"_type": "UMLNameCompartmentView",
+									"_id": "AAAAAAF0QH1ISLMqK9k=",
+									"_parent": {
+										"$ref": "AAAAAAF0QH1ISLMpIwo="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QH1IR7Mnhp0="
+									},
+									"subViews": [
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAF0QH1ISLMrLXY=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMqK9k="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": 1824,
+											"top": 784,
+											"height": 13
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAF0QH1ISLMsC6s=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMqK9k="
+											},
+											"font": "Arial;13;1",
+											"left": 917,
+											"top": 399,
+											"width": 287,
+											"height": 13,
+											"text": "Analyzer"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAF0QH1ISLMtJHc=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMqK9k="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": 1824,
+											"top": 784,
+											"width": 73.67724609375,
+											"height": 13,
+											"text": "(from Model)"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAF0QH1ISLMuod4=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMqK9k="
+											},
+											"visible": false,
+											"font": "Arial;13;0",
+											"left": 1824,
+											"top": 784,
+											"height": 13,
+											"horizontalAlignment": 1
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 912,
+									"top": 392,
+									"width": 297,
+									"height": 25,
+									"stereotypeLabel": {
+										"$ref": "AAAAAAF0QH1ISLMrLXY="
+									},
+									"nameLabel": {
+										"$ref": "AAAAAAF0QH1ISLMsC6s="
+									},
+									"namespaceLabel": {
+										"$ref": "AAAAAAF0QH1ISLMtJHc="
+									},
+									"propertyLabel": {
+										"$ref": "AAAAAAF0QH1ISLMuod4="
+									}
+								},
+								{
+									"_type": "UMLAttributeCompartmentView",
+									"_id": "AAAAAAF0QH1ISLMvfHw=",
+									"_parent": {
+										"$ref": "AAAAAAF0QH1ISLMpIwo="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QH1IR7Mnhp0="
+									},
+									"subViews": [
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAF0QH2Uy7NWl94=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMvfHw="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QH2UkbNT/9I="
+											},
+											"font": "Arial;13;0",
+											"left": 917,
+											"top": 422,
+											"width": 287,
+											"height": 13,
+											"text": "+patientName",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLAttributeView",
+											"_id": "AAAAAAF0QH3E/LNdBE8=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMvfHw="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QH3Ey7NaLLw="
+											},
+											"font": "Arial;13;0",
+											"left": 917,
+											"top": 437,
+											"width": 287,
+											"height": 13,
+											"text": "+reader",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 912,
+									"top": 417,
+									"width": 297,
+									"height": 38
+								},
+								{
+									"_type": "UMLOperationCompartmentView",
+									"_id": "AAAAAAF0QH1ISLMwkv0=",
+									"_parent": {
+										"$ref": "AAAAAAF0QH1ISLMpIwo="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QH1IR7Mnhp0="
+									},
+									"subViews": [
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QH4y0LNlV/U=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMwkv0="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QH4ymrNijds="
+											},
+											"font": "Arial;13;0",
+											"left": 917,
+											"top": 460,
+											"width": 287,
+											"height": 13,
+											"text": "+__init__(self, patientName, reader)",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QH5uaLNyu/c=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMwkv0="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QH5uNbNvtT4="
+											},
+											"font": "Arial;13;0",
+											"left": 917,
+											"top": 475,
+											"width": 287,
+											"height": 13,
+											"text": "+calcAllCGM()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QH6gObN54iY=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMwkv0="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QH6gBbN2E1M="
+											},
+											"font": "Arial;13;0",
+											"left": 917,
+											"top": 490,
+											"width": 287,
+											"height": 13,
+											"text": "+calcAllInsulin()",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAF0QH7cf7OAl2U=",
+											"_parent": {
+												"$ref": "AAAAAAF0QH1ISLMwkv0="
+											},
+											"model": {
+												"$ref": "AAAAAAF0QH7cSrN9THg="
+											},
+											"font": "Arial;13;0",
+											"left": 917,
+											"top": 505,
+											"width": 287,
+											"height": 13,
+											"text": "+writeAll()",
+											"horizontalAlignment": 0
+										}
+									],
+									"font": "Arial;13;0",
+									"left": 912,
+									"top": 455,
+									"width": 297,
+									"height": 68
+								},
+								{
+									"_type": "UMLReceptionCompartmentView",
+									"_id": "AAAAAAF0QH1ISLMx9go=",
+									"_parent": {
+										"$ref": "AAAAAAF0QH1ISLMpIwo="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QH1IR7Mnhp0="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": 912,
+									"top": 392,
+									"width": 10,
+									"height": 10
+								},
+								{
+									"_type": "UMLTemplateParameterCompartmentView",
+									"_id": "AAAAAAF0QH1ISLMy7j0=",
+									"_parent": {
+										"$ref": "AAAAAAF0QH1ISLMpIwo="
+									},
+									"model": {
+										"$ref": "AAAAAAF0QH1IR7Mnhp0="
+									},
+									"visible": false,
+									"font": "Arial;13;0",
+									"left": 912,
+									"top": 392,
+									"width": 10,
+									"height": 10
+								}
+							],
+							"font": "Arial;13;0",
+							"containerChangeable": true,
+							"left": 912,
+							"top": 392,
+							"width": 297,
+							"height": 217,
+							"nameCompartment": {
+								"$ref": "AAAAAAF0QH1ISLMqK9k="
+							},
+							"attributeCompartment": {
+								"$ref": "AAAAAAF0QH1ISLMvfHw="
+							},
+							"operationCompartment": {
+								"$ref": "AAAAAAF0QH1ISLMwkv0="
+							},
+							"receptionCompartment": {
+								"$ref": "AAAAAAF0QH1ISLMx9go="
+							},
+							"templateParameterCompartment": {
+								"$ref": "AAAAAAF0QH1ISLMy7j0="
+							}
+						}
+					]
+				},
+				{
+					"_type": "UMLClass",
+					"_id": "AAAAAAF0QHF6LrIAXRA=",
+					"_parent": {
+						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
+					},
+					"name": "Reader",
+					"attributes": [
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAF0QHhADbKRcwk=",
+							"_parent": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"name": "patientName"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAF0QHH5K7Isva0=",
+							"_parent": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"name": "dfCGM"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAF0QHVeOLJXtM8=",
+							"_parent": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"name": "dfInsulin"
+						}
+					],
+					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QHdcarJ4zo4=",
+							"_parent": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"name": "__init__",
+							"parameters": [
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAF0QHf4ZLKEmpM=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHdcarJ4zo4="
+									},
+									"name": "patientName"
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAF0QHf4ZLKFyrA=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHdcarJ4zo4="
+									},
+									"name": "fileNameEntries"
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAF0QHf4ZLKGDmI=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHdcarJ4zo4="
+									},
+									"name": "fileNameTreatments"
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAF0QHf4ZLKHjU8=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHdcarJ4zo4="
+									},
+									"name": "timeCGMStableMin"
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAF0QHf4ZLKIgFg=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHdcarJ4zo4="
+									},
+									"name": "timeStrT"
+								}
+							]
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QHIU5LIyQLI=",
+							"_parent": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"name": "readData",
+							"parameters": [
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAF0QJxWDLOIIyk=",
+									"_parent": {
+										"$ref": "AAAAAAF0QHIU5LIyQLI="
+									},
+									"name": "timeStrT",
+									"type": ""
+								}
+							],
+							"specification": "read data from json files to dfEntries and dfTreatments.\ntimeStrT is the timestring used in the treatments file. "
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QHPkMrI5Qqg=",
+							"_parent": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"name": "createInsulinStructure"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QHQuF7JAfgs=",
+							"_parent": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"name": "createCGMStructure"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QHRGaLJG81o=",
+							"_parent": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"name": "fixData"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QHS+h7JPcoo=",
+							"_parent": {
+								"$ref": "AAAAAAF0QHF6LrIAXRA="
+							},
+							"name": "findWholsDayNight"
+						}
+					]
+				},
+				{
+					"_type": "UMLClass",
+					"_id": "AAAAAAF0QH1IR7Mnhp0=",
+					"_parent": {
+						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
+					},
+					"name": "Analyzer",
+					"attributes": [
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAF0QH2UkbNT/9I=",
+							"_parent": {
+								"$ref": "AAAAAAF0QH1IR7Mnhp0="
+							},
+							"name": "patientName"
+						},
+						{
+							"_type": "UMLAttribute",
+							"_id": "AAAAAAF0QH3Ey7NaLLw=",
+							"_parent": {
+								"$ref": "AAAAAAF0QH1IR7Mnhp0="
+							},
+							"name": "reader"
+						}
+					],
+					"operations": [
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QH4ymrNijds=",
+							"_parent": {
+								"$ref": "AAAAAAF0QH1IR7Mnhp0="
+							},
+							"name": "__init__",
+							"parameters": [
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAF0QH4/hrNp+rM=",
+									"_parent": {
+										"$ref": "AAAAAAF0QH4ymrNijds="
+									},
+									"name": "self",
+									"type": ""
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAF0QH4/hrNqjyk=",
+									"_parent": {
+										"$ref": "AAAAAAF0QH4ymrNijds="
+									},
+									"name": "patientName",
+									"type": ""
+								},
+								{
+									"_type": "UMLParameter",
+									"_id": "AAAAAAF0QH4/hrNrpzU=",
+									"_parent": {
+										"$ref": "AAAAAAF0QH4ymrNijds="
+									},
+									"name": "reader",
+									"type": ""
+								}
+							]
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QH5uNbNvtT4=",
+							"_parent": {
+								"$ref": "AAAAAAF0QH1IR7Mnhp0="
+							},
+							"name": "calcAllCGM"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QH6gBbN2E1M=",
+							"_parent": {
+								"$ref": "AAAAAAF0QH1IR7Mnhp0="
+							},
+							"name": "calcAllInsulin"
+						},
+						{
+							"_type": "UMLOperation",
+							"_id": "AAAAAAF0QH7cSrN9THg=",
+							"_parent": {
+								"$ref": "AAAAAAF0QH1IR7Mnhp0="
+							},
+							"name": "writeAll"
+						}
+					]
+				}
+			]
+		}
+	]
+}
