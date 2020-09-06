@@ -4,7 +4,7 @@ Created on Sun Jul 26 11:04:41 2020
 
 @author: hannu
 """
-import ../unitTests
+import unitTests
 import unitTests_n2
 import unitTests_n3
 import unitTests_n4

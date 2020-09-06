@@ -20,7 +20,6 @@ import datetime as dt
 import Reader
 import Analyzer
 
-import help_func
 
 treatmentsFile = 'testFiles/treatments2.json'
 entriesFile    = 'testFiles/entries1_time.json'
@@ -28,9 +27,11 @@ entriesFile    = 'testFiles/entries1_time.json'
 name = 'Daniel'
 timeCGMStableMin = 20; 
 
-readerTest = Reader.Reader(name, entriesFile, treatmentsFile, timeCGMStableMin);
-analyzerTime = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.booleanWholeDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
 
+readerTest = Reader.Reader(name, entriesFile, treatmentsFile, timeCGMStableMin, 'timestamp');
+readerTest = Reader.Reader(name, entriesFile, treatmentsFile, timeCGMStableMin);
+#analyzerTime = Analyzer.Analyzer(name, readerTest.numDayNight, readerTest.booleanWholeDayNight, readerTest.dfCGM, readerTest.dfInsulin, timeCGMStableMin); 
+analyzerTime = Analyzer.Analyzer(name, readerTest)
 
 #Analyzer.Analyzer(name, readerTest.dfCGM); 
 #analyzerTime.calcAllCGM(); 

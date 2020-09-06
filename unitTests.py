@@ -38,7 +38,7 @@ daniel1T = '/Users/mattiasbrannstrom/Desktop/Hanna/Dropbox/Diassist_OpenAPS_stud
 danielJohanssonEntry1 = '/Users/mattiasbrannstrom/Desktop/Hanna/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanilEntries_forstaOmgangen.json'
 
 
-readerTest = Reader.Reader(name, entriesFile, treatmentsFile,  timeCGMStableMin);
+readerTest = Reader.Reader(name, entriesFile, treatmentsFile,  timeCGMStableMin, 'timestamp');
 analyzer = Analyzer.Analyzer(name, readerTest);
 analyzer.calcAllCGM(); 
 #analyzer.calcAllInsulin();

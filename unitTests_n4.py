@@ -18,7 +18,6 @@ import datetime as dt
 import Reader
 import Analyzer
 
-import help_func
 
 ## Unit tests: 
 
@@ -69,7 +68,15 @@ PGS_correct100 = 14.2031
 GVP_correct100 = 2.0622
 
 dfCGMTL = pd.DataFrame(data100); 
-analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
+
+fileNameEntries = ''; fileNameTreatments = '';  
+timeStrTreatments = 'timestamp'
+patientName = 'namn'
+readerTL =  Reader.Reader(patientName, fileNameEntries, fileNameTreatments, 
+                                timeCGMStableMin, 'timestamp', True, dfCGMTL, dfInsulin, 
+                                numDayNight, booleanWholeDayNight)
+analyzerTL = Analyzer.Analyzer(patientName, readerTL)
+#analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
 tirTest100 = analyzerTL.calcTimeInXNew(dfCGMTL, analyzerTL.tirLevel, '[]')  # [3.9 10]
 PGSTest100 = analyzerTL.cgmPGS
 GVPTest100 = analyzerTL.cgmGVP
@@ -104,7 +111,13 @@ PGS_correct60  = 22.1311
 GVP_correct60  = 2.3656
 
 dfCGMTL = pd.DataFrame(data60); 
-analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
+
+readerTL =  Reader.Reader(patientName, fileNameEntries, fileNameTreatments, 
+                                timeCGMStableMin, 'timestamp', True, dfCGMTL, dfInsulin, 
+                                numDayNight, booleanWholeDayNight)
+analyzerTL = Analyzer.Analyzer(patientName, readerTL)
+
+#analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
 tirTest60 = analyzerTL.calcTimeInXNew(dfCGMTL, analyzerTL.tirLevel, '[]')  # [3.9 10]
 PGSTest60 = analyzerTL.cgmPGS
 GVPTest60 = analyzerTL.cgmGVP
@@ -140,7 +153,13 @@ GVP_correctNotInRangeTL = 2.9558
 
 #readerTL = Reader.Reader(name, entriesTL, treatmentsFile,  timeCGMStableMin);
 dfCGMTL = pd.DataFrame(dataNotInRangeTL); 
-analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
+
+readerTL =  Reader.Reader(patientName, fileNameEntries, fileNameTreatments, 
+                                timeCGMStableMin, 'timestamp', True, dfCGMTL, dfInsulin, 
+                                numDayNight, booleanWholeDayNight)
+analyzerTL = Analyzer.Analyzer(patientName, readerTL)
+
+#analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
 tirTestNotInRangeTL = analyzerTL.calcTimeInXNew(dfCGMTL, analyzerTL.tirLevel, '[]')  # [3.9 10]
 PGSTestNotInRangeTL = analyzerTL.cgmPGS
 GVPTestNotInRangeTL = analyzerTL.cgmGVP
@@ -174,7 +193,13 @@ PGS_correctTLAll = -1
 GVP_correctTLAll = -1
     
 dfCGMTL = pd.DataFrame(dataTLAll); 
-analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
+
+readerTL =  Reader.Reader(patientName, fileNameEntries, fileNameTreatments, 
+                                timeCGMStableMin, 'timestamp', True, dfCGMTL, dfInsulin, 
+                                numDayNight, booleanWholeDayNight)
+analyzerTL = Analyzer.Analyzer(patientName, readerTL)
+
+#analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
 tirTestTLAll = analyzerTL.calcTimeInXNew(dfCGMTL, analyzerTL.tirLevel, '[]')  # [3.9 10]
 PGSTestTLAll = analyzerTL.cgmPGS
 GVPTestTLAll = analyzerTL.cgmGVP
@@ -209,7 +234,13 @@ GVP_correctTL = 5.3514
 
     
 dfCGMTL = pd.DataFrame(dataTL); 
-analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
+
+readerTL =  Reader.Reader(patientName, fileNameEntries, fileNameTreatments, 
+                                timeCGMStableMin, 'timestamp', True, dfCGMTL, dfInsulin, 
+                                numDayNight, booleanWholeDayNight)
+analyzerTL = Analyzer.Analyzer(patientName, readerTL)
+
+#analyzerTL = Analyzer.Analyzer(name, numDayNight, booleanWholeDayNight, dfCGMTL, dfInsulin, timeCGMStableMin); 
 tirTestTL = analyzerTL.calcTimeInXNew(dfCGMTL, analyzerTL.tirLevel, '[]')  # [3.9 10]
 PGSTestTL = analyzerTL.cgmPGS
 GVPTestTL = analyzerTL.cgmGVP

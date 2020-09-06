@@ -174,7 +174,7 @@ class Analyzer:
         if booleanWholeDayNight:
             tdd = round((sumBasal+sumBolus)/self.numDayNight, 4); 
         else: 
-            tdd = 0; 
+            tdd = -1; 
             
         return tdd;  
         

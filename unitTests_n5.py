@@ -17,14 +17,13 @@ import datetime as dt
 import Reader
 import Analyzer
 
-import help_func
 
 tf = 'testFiles/treatments_n5.json'
 ef_n1 = 'testFiles/entriesEXNy.json'
 name = 'Daniel'
 timeCGMStableMin = 20; 
 
-reader_n1 = Reader.Reader(name, ef_n1, tf, timeCGMStableMin);
+reader_n1 = Reader.Reader(name, ef_n1, tf, timeCGMStableMin, 'timestamp');
 #analyzer = Analyzer.Analyzer(name, reader.numDayNight, reader.dfCGM, reader.dfInsulin, timeCGMStableMin); 
 
 lenDfCGMCorrect_n1 = 1121; 
@@ -43,7 +42,7 @@ numDayNight_test_n1 = reader_n1.numDayNight;
 lendfInsulinTest_n1 = len( reader_n1.dfInsulin['dateTime'])
 
 ef_n2    = 'testFiles/entriesEXNy_v2.json'
-reader_n2 = Reader.Reader(name, ef_n2, tf, timeCGMStableMin);
+reader_n2 = Reader.Reader(name, ef_n2, tf, timeCGMStableMin, 'timestamp');
 
 lenDfCGMCorrect_n2 = 1118; 
 firstDateCorrect_n2 = dt.date(2020,7, 8)
@@ -60,7 +59,7 @@ numDayNight_test_n2 = reader_n2.numDayNight;
 ef_n3    = 'testFiles/entries1_time.json'
 name = 'Daniel'
 timeCGMStableMin = 20; 
-reader_n3 = Reader.Reader(name, ef_n3, tf, timeCGMStableMin);
+reader_n3 = Reader.Reader(name, ef_n3, tf, timeCGMStableMin, 'timestamp');
 booleanWholeDayNight_correct_n3 = False; 
 booleanWholeDayNight_test_n3 = reader_n3.booleanWholeDayNight;
 numDayNightCorrect_n3 = 2; 

@@ -16,51 +16,77 @@ import datetime as dt
 class Reader: 
    
     
-    def __init__(self, patientName, fileNameEntries, fileNameTreatments, timeCGMStableMin, timeStrT):
-
+    def __init__(self, patientName, fileNameEntries, fileNameTreatments, timeCGMStableMin, timeStrTreatments = 'timestamp',
+                 runSimple = False, dfCGMIn = False, dfInsulinIn = False, numDayNightIn = 0, booleanWholeDayNightIn = True):
         self.patientName = patientName; 
-        self.readFromFile = 1; 
-        self.patientName = patientName;
-        self.datafile_entries = fileNameEntries; #self.patientName + '\\' + 'response_entries.json'; 
-        self.datafile_treatments = fileNameTreatments; 
-        
-        self.timeCGMStableSec = timeCGMStableMin*60;
-        #self.datafile_treatments = self.patientName + '\\' + 'response_treatments.json';
-        
-        self.dfEntries = pd.DataFrame();
-        self.dfTreatments = pd.DataFrame();
-        
-        self.dfCGM   = pd.DataFrame(columns=['dateTime', 'cgm', 'deltaTimeSec']);
-        self.dfInsulin = pd.DataFrame(columns=['dateTime', 'bolus', 'rate', 'deltaTimeSec'])
-
-        #self.dfBolus = pd.DataFrame(columns=['dateTime', 'bolus'])
-        #self.dfCarbs = pd.DataFrame(columns=['dateTime', 'carbs'])
-        #self.dfBasal = pd.DataFrame(columns=['dateTime', 'basalRate', 'deltaTimeSec'])
-        
-        self.dfEntries, self.dfTreatments, timeStampStr = self.readData(timeStrT);
-        self.dfCGM = self.createCGMStructure(self.dfEntries); 
-        self.dfInsulin = self.createInsulinStructure(self.dfTreatments, timeStampStr);
-        
-        print('size dfCGM: ' + str(len(self.dfCGM)))
-        print('size dfInsulin: ' + str(len(self.dfInsulin)))
-
-        self.numDayNight, self.booleanWholeDayNight, self.dfCGM, self.dfInsulin = self.fixData(); # Remove to that only whole day/nigth periods are in data series.
-        print('size dfCGM, efter fix: ' + str(len(self.dfCGM)))
-        print('size dfInsulin, efter fix: ' + str(len(self.dfInsulin)))
-
-    def readData(self, timeStrT):
+            
+        if (runSimple == False): 
+            self.readFromFile = 1; 
+            self.patientName = patientName;
+            self.datafile_entries = fileNameEntries; #self.patientName + '\\' + 'response_entries.json'; 
+            self.datafile_treatments = fileNameTreatments; 
+            
+            self.timeCGMStableSec = timeCGMStableMin*60;
+            #self.datafile_treatments = self.patientName + '\\' + 'response_treatments.json';
+            
+            self.dfEntries = pd.DataFrame();
+            self.dfTreatments = pd.DataFrame();
+            
+            self.dfCGM   = pd.DataFrame(columns=['dateTime', 'cgm', 'deltaTimeSec']);
+            self.dfInsulin = pd.DataFrame(columns=['dateTime', 'bolus', 'rate', 'deltaTimeSec'])
+    
+            #self.dfBolus = pd.DataFrame(columns=['dateTime', 'bolus'])
+            #self.dfCarbs = pd.DataFrame(columns=['dateTime', 'carbs'])
+            #self.dfBasal = pd.DataFrame(columns=['dateTime', 'basalRate', 'deltaTimeSec'])
+            
+            self.dfEntries, self.dfTreatments, timeStampStr = self.readData(self.datafile_entries, self.datafile_treatments, timeStrTreatments);
+            self.dfCGM = self.createCGMStructure(self.dfEntries); 
+            self.dfInsulin = self.createInsulinStructure(self.dfTreatments, timeStampStr);
+            
+            print('size dfCGM: ' + str(len(self.dfCGM)))
+            print('size dfInsulin: ' + str(len(self.dfInsulin)))
+    
+            self.numDayNight, self.booleanWholeDayNight, self.dfCGM, self.dfInsulin = self.fixData(); # Remove to that only whole day/nigth periods are in data series.
+            print('size dfCGM, efter fix: ' + str(len(self.dfCGM)))
+            print('size dfInsulin, efter fix: ' + str(len(self.dfInsulin)))
+        else:
+            self.readFromFile = 1; 
+            #self.datafile_entries = fileNameEntries; #self.patientName + '\\' + 'response_entries.json'; 
+            #self.datafile_treatments = fileNameTreatments; 
+            
+            self.timeCGMStableSec = timeCGMStableMin*60;
+            
+            self.dfEntries = pd.DataFrame();
+            self.dfTreatments = pd.DataFrame();
+            
+            self.dfCGM     = dfCGMIn; 
+            self.dfInsulin = dfInsulinIn; 
+            
+            print('size dfCGM: ' + str(len(self.dfCGM)))
+            print('size dfInsulin: ' + str(len(self.dfInsulin)))
+    
+            self.numDayNight = numDayNightIn; 
+            self.booleanWholeDayNight = booleanWholeDayNightIn;
+            print('size dfCGM, efter fix: ' + str(len(self.dfCGM)))
+            print('size dfInsulin, efter fix: ' + str(len(self.dfInsulin))) 
+            
+   
+    
+    def readData(self, datafile_entries, datafile_treatments, timeStrTreatments):
+        # Read data from json files (datafiles_entries and datafile_treatments)
+        # timeStrT is the time string 
         if self.readFromFile == 1: 
                     
             entries = [];
-            entries = json.load(open(self.datafile_entries, encoding="utf8"))
+            entries = json.load(open(datafile_entries, encoding="utf8"))
 
             treatments = [];
-            treatments = json.load(open(self.datafile_treatments, encoding="utf8"));
+            treatments = json.load(open(datafile_treatments, encoding="utf8"));
         
             dfE = pd.DataFrame.from_dict(entries);
             dfT = pd.DataFrame.from_dict(treatments);
             
-            print('Reading files: ' + self.datafile_entries + ' and '+ self.datafile_treatments +' for ' + self.patientName)
+            print('Reading files: ' + datafile_entries + ' and '+ datafile_treatments +' for ' + self.patientName)
             print('Entry size: ' + str(len(entries)))
             print('Treatment size: ' + str(len(treatments)))
             
@@ -74,8 +100,8 @@ class Reader:
             #     idxToRemove = dfT['created_at'].isnull();
             #     timeStampStr = 'created_at'
                
-            idxToRemove = dfT[timeStrT].isnull();
-            timeStampStr =  timeStrT;   
+            idxToRemove = dfT[timeStrTreatments].isnull();
+            timeStampStr =  timeStrTreatments;   
             dfT = dfT[~idxToRemove]; # Remove all rows with timestamp = nan
             dfT.reset_index(inplace = True)
             

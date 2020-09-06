@@ -21,7 +21,6 @@ import datetime as dt
 import Reader
 import Analyzer
 
-import help_func
 
 timeCGMStableMin = 20; 
 
@@ -37,13 +36,13 @@ ef = 'testFiles/entries_ex_caspian.json';
 name = 'Daniel2'
 tf = 'testFiles/treatments_ex_nightscoutcaspian_forN3.json'
 
-reader  = Reader.Reader(name, ef, tf, timeCGMStableMin);
+reader  = Reader.Reader(name, ef, tf, timeCGMStableMin, 'timestamp');
 dfInsulinLength_correct = 0
 
 
 tf2 = 'testFiles/treatments_ex_nightscoutcaspian_forN3_2.json'
-reader2  = Reader.Reader(name, ef, tf2, timeCGMStableMin);
-analyzer2 = Analyzer.Analyzer(name, reader2.numDayNight,  reader2.booleanWholeDayNight, reader2.dfCGM, reader2.dfInsulin, timeCGMStableMin); 
+reader2  = Reader.Reader(name, ef, tf2, timeCGMStableMin, 'timestamp');
+analyzer2 = Analyzer.Analyzer(name, reader2) #.numDayNight,  reader2.booleanWholeDayNight, reader2.dfCGM, reader2.dfInsulin, timeCGMStableMin); 
 
 dfInsulinTest = reader2.dfInsulin; 
 length_dfInsulin_test = len(dfInsulinTest)
