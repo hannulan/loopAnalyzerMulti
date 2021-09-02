@@ -182,32 +182,32 @@ class Analyzer:
         ## Write result in text format to a file:     
         file_object  = open(self.patientName + '.csv', "w+") 
         file_object.write('Patient name; ' + self.patientName + '\n');
-        file_object.write('tir; ' + str(self.tir) + ';\n');
-        file_object.write('tit; ' + str(self.tit) + ';\n');
+        file_object.write('tir; ' + str(self.tir).replace(".", ",") + ';\n');
+        file_object.write('tit; ' + str(self.tit).replace(".", ",") + ';\n');
         
-        file_object.write('tihyperLevel1; ' + str(self.tihyperLevel1Value) + ';\n');
-        file_object.write('tihyperLevel2; ' + str(self.tihyperLevel2Value) + ';\n');
-        file_object.write('tihypoLevel1;  ' + str(self.tihypoLevel1Value) + ';\n');
-        file_object.write('tihypoLevel2;  ' + str(self.tihypoLevel2Value) + ';\n\n');
+        file_object.write('tihyperLevel1; ' + str(self.tihyperLevel1Value).replace(".", ",") + ';\n');
+        file_object.write('tihyperLevel2; ' + str(self.tihyperLevel2Value).replace(".", ",") + ';\n');
+        file_object.write('tihypoLevel1;  ' + str(self.tihypoLevel1Value).replace(".", ",") + ';\n');
+        file_object.write('tihypoLevel2;  ' + str(self.tihypoLevel2Value).replace(".", ",") + ';\n\n');
         
-        file_object.write('cgmMean; ' + str(self.cgmMean)   + ';\n');
-        file_object.write('cgmSD;   ' + str(self.cgmSD)   + ';\n');
-        file_object.write('cgmSCV;  ' + str(self.cgmSCV)  + ';\n\n');
+        file_object.write('cgmMean; ' + str(self.cgmMean).replace(".", ",")   + ';\n');
+        file_object.write('cgmSD;   ' + str(self.cgmSD).replace(".", ",")   + ';\n');
+        file_object.write('cgmSCV;  ' + str(self.cgmSCV).replace(".", ",")  + ';\n\n');
         
-        file_object.write('cgmSDDay;   ' + str(self.cgmSDDay)   + ';\n');
-        file_object.write('cgmSDNight; ' + str(self.cgmSDNight) + ';\n\n');
+        file_object.write('cgmSDDay;   ' + str(self.cgmSDDay).replace(".", ",")   + ';\n');
+        file_object.write('cgmSDNight; ' + str(self.cgmSDNight).replace(".", ",") + ';\n\n');
         
-        file_object.write('cgmPGS;  ' + str(self.cgmPGS)  + ';\n');
-        file_object.write('cgmMAGE; ' + str(self.cgmMAGE) + ';\n\n');
+        #file_object.write('cgmPGS;  ' + str(self.cgmPGS)  + ';\n');
+        #file_object.write('cgmMAGE; ' + str(self.cgmMAGE) + ';\n\n');
         
-        file_object.write('tihypoDagLevel1; ' + str(self.tihypoDayLevel1Value) + ';\n');
-        file_object.write('tihypoDagLevel2; ' + str(self.tihypoDayLevel2Value) + ';\n');
-        file_object.write('tihypoNattLevel1;  ' + str(self.tihypoNightLevel1Value) + ';\n');
-        file_object.write('tihypoNattLevel2;  ' + str(self.tihypoNightLevel2Value) + ';\n\n');
+        file_object.write('tihypoDagLevel1; ' + str(self.tihypoDayLevel1Value).replace(".", ",") + ';\n');
+        file_object.write('tihypoDagLevel2; ' + str(self.tihypoDayLevel2Value).replace(".", ",") + ';\n');
+        file_object.write('tihypoNattLevel1;  ' + str(self.tihypoNightLevel1Value).replace(".", ",") + ';\n');
+        file_object.write('tihypoNattLevel2;  ' + str(self.tihypoNightLevel2Value).replace(".", ",") + ';\n\n');
         
-        file_object.write('tirDag;  ' + str(self.tirDag) + ';\n');
-        file_object.write('tirNatt; ' + str(self.tirNatt) + ';\n');
-        file_object.write('TDD genomsnitt; ' + str(self.tdd) + ';\n');
+        file_object.write('tirDag;  ' + str(self.tirDayValue).replace(".", ",") + ';\n');
+        file_object.write('tirNatt; ' + str(self.tirNightValue).replace(".", ",") + ';\n');
+        file_object.write('TDD genomsnitt; ' + str(self.tdd).replace(".", ",") + ';\n');
         file_object.close()
 
     def calcPGS(self, dfCGM, GVP, MG, PTIR, numDayNight):

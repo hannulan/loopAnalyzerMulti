@@ -4,6 +4,11 @@
 Created on Sun Jun 21 18:22:59 2020
 
 @author: mattiasbrannstrom
+
+Script for reading and analyzing specific files from different patients
+Filename specified in the beginning of the file, one Entry and one treatment file
+The files are exports from Nightscout
+
 """
 
 from io import StringIO
@@ -21,78 +26,72 @@ import Analyzer
 timeCGMStableMin = 20; 
 
 
-## All entry-files: 
+## All tfiles: 
+petraT                = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/PetraBangtsson/InlamningFinal/PetraTreatments.json'
 petraBengtsonEntry    = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/PetraBangtsson/InlamningFinal/PetraEntries_v2.json'
+
+paulT                 = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/PaulJaniak/InlamningFinal/treatmentsPaul3.json'
 paulJaniakEntry       = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/PaulJaniak/InlamningFinal/entriesPaul2.json'
 
+claraT                = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/ClaraHogstrom/InlamningFinal/ClaraTreatments.json'
 claraHogstramEntry    = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/ClaraHogstrom/InlamningFinal/ClaraEntries.json'
+
+ceciliaT              = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/CeciliaSommerfeld/InlamningFinal/ceciliatreatments_v2.json'
 ceciliaSommerfeld     = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/CeciliaSommerfeld/InlamningFinal/ceciliaEntries_v2.json'
 
+
+ingridT               = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/IngridSvensson/InlamningFinal/IngridTreatments_v4.json'
 ingridSvenssonEntry   = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/IngridSvensson/InlamningFinal/Ingridentries_v3.json'
+
+daniel1T              = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanielTreatments1011-1211_forstaOmgangen.json'
 danielJohanssonEntry1 = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanilEntries_forstaOmgangen.json'
+
+daniel2T              = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanielTreatments0111-0311_andraOmgangen.json'
 danielJohanssonEntry2 = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/danielEntries_andraOmgangen.json'
 
+emmaE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/EmmaMandroppe/Final/entries.json'
+emmaT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/EmmaMandroppe/Final/treatments.json'
 
-## All treatment-files: 
-petraT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/PetraBangtsson/InlamningFinal/PetraTreatments.json'
-paulT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/PaulJaniak/InlamningFinal/treatmentsPaul3.json'
+henrikE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/HenrikGrentzelius/entries.json'
+henrikT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/HenrikGrentzelius/treatments.json'
 
-claraT   = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/ClaraHogstrom/InlamningFinal/ClaraTreatments.json'
-ceciliaT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/CeciliaSommerfeld/InlamningFinal/ceciliatreatments_v2.json'
-
-ingridT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/IngridSvensson/InlamningFinal/IngridTreatments_v4.json'
-
-daniel1T = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanielTreatments1011-1211_forstaOmgangen.json'
-daniel2T = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanielTreatments0111-0311_andraOmgangen.json'
 
 pd.set_option('mode.chained_assignment', None)
 
-## All readers: 
-readerPetra = Reader.Reader('Petra', petraBengtsonEntry, petraT,  timeCGMStableMin);
+## Create reading object for all patients
+readerPetra = Reader.Reader('Petra', petraBengtsonEntry, petraT,  timeCGMStableMin, 'created_at'); #
+readerPaul   = Reader.Reader('Paul', paulJaniakEntry, paulT,  timeCGMStableMin, 'created_at'); # OK
 
-readerPaul   = Reader.Reader('Paul', paulJaniakEntry, paulT,  timeCGMStableMin, 'created_at');
-readerClara   = Reader.Reader('Clara', claraHogstramEntry, claraT,  timeCGMStableMin);
-readerCecilia = Reader.Reader('Cecilia', ceciliaSommerfeld, ceciliaT,  timeCGMStableMin);
+readerClara   = Reader.Reader('Clara', claraHogstramEntry, claraT,  timeCGMStableMin, 'timestamp');
+readerCecilia = Reader.Reader('Cecilia', ceciliaSommerfeld, ceciliaT,  timeCGMStableMin, 'created_at'); #
+# Varfor bara 20
 
-readerIngrid  = Reader.Reader('Ingrid', ingridSvenssonEntry, ingridT,  timeCGMStableMin);
-readerDaniel1 = Reader.Reader('Daniel1', danielJohanssonEntry1, daniel1T,  timeCGMStableMin);
-readerDaniel2 = Reader.Reader('Daniel2', danielJohanssonEntry2, daniel2T,  timeCGMStableMin);
+readerIngrid  = Reader.Reader('Ingrid', ingridSvenssonEntry, ingridT,  timeCGMStableMin, 'created_at'); 
+readerDaniel1 = Reader.Reader('Daniel1', danielJohanssonEntry1, daniel1T,  timeCGMStableMin, 'timestamp');
+readerDaniel2 = Reader.Reader('Daniel2', danielJohanssonEntry2, daniel2T,  timeCGMStableMin, 'timestamp');
+
+readerEmma = Reader.Reader('Emma', emmaE, emmaT,  timeCGMStableMin, 'created_at');
+readerHenrik = Reader.Reader('Henrik', henrikE, henrikT,  timeCGMStableMin, 'created_at');
+
+## Create analyzers for all patients:
+analyzerPetra   = Analyzer.Analyzer('Petra', readerPetra)
+analyzerPaul    = Analyzer.Analyzer('Paul', readerPaul)
+analyzerClara   = Analyzer.Analyzer('Clara', readerClara)
+analyzerCecilia = Analyzer.Analyzer('Cecilia', readerCecilia)
+analyzerIngrid  = Analyzer.Analyzer('Ingrid', readerIngrid)
+analyzerDaniel1 = Analyzer.Analyzer('Daniel1', readerDaniel1)
+analyzerDaniel2 = Analyzer.Analyzer('Daniel2', readerDaniel2)
+analyzerEmma    = Analyzer.Analyzer('Emma', readerEmma)
+analyzerHenrik  = Analyzer.Analyzer('Henrik', readerHenrik)
 
 
-## All analyzers:
-analyzerPetra = Analyzer.analyzer('Petra', readerPetra)
-analyzerPaul = Analyzer.analyzer('Paul', readerPaul)
-analyzerClara = Analyzer.analyzer('Clara', readerClara)
-analyzerCecilia = Analyzer.analyzer('Cecilia', readerCecilia)
-analyzerIngrid = Analyzer.analyzer('Ingrid', readerIngrid)
-
-
-readerPaul.createInsulinStructure(readerPaul.dfTreatements, timeStampStr)
-
-
-reader_v = [readerPetra, readerPaul, readerClara, readerCecilia, readerIngrid, readerDaniel1, readerDaniel2];
-name_v   = ['Petra', 'Paul', 'Clara', 'Cecilia', 'Ingrid', 'Daniel1', 'Daniel2'];
-ii_v =  [0, 1, 2, 3, 4, 5, 6];
-for ii in [0]:
-    print('Read file from: ' + name_v[ii])
-    reader_v[ii].readData(); 
-    if ii != 1:
-        reader_v[ii].createCGMStructure();
-    input("Press Enter to continue...")
-    
-    
-    
-## All Analyzers:
-    
-## Petra
-ii = 0; 
-dfCGM   = reader_v[ii].dfCGM;   
-#analyzer = Analyzer.Analyzer(name_v[ii], dfCGM); 
-#analyzer.calcAllCGM(); 
-#analyzer.writeAllCGM();
-
-#timeAboveRange_per, timeBelowRange_per, timeInRange_per = analyzer.calcTimeInRange(dfCGM)
-#timeAboveTarget_per, timeBelowTarget_per, timeInTarget_per = analyzer.calcTimeInTarget(dfCGM)
-
-#stdCGM = analyzer.calcStdCGM(dfCGM);
-
+# Write output files for all patients:
+analyzerPetra.writeAll()   
+analyzerPaul.writeAll()
+analyzerClara.writeAll()   
+analyzerCecilia.writeAll() 
+analyzerIngrid.writeAll()
+analyzerDaniel1.writeAll()
+analyzerDaniel2.writeAll()
+analyzerEmma.writeAll()
+analyzerHenrik.writeAll()
