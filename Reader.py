@@ -131,14 +131,20 @@ class Reader:
           tempOld = dt.time(0);
           for ii in range(0,len(dfT[timeStampStr])):
             try: 
+                #print('hej 1')
                 temp = dt.datetime.strptime(dfT[timeStampStr][ii], '%Y-%m-%dT%H:%M:%S%fZ');
             except:
+                #print('hej 2')
                 #print('ii: ' + str(ii))
                 temp = 0;
                 #temp = dt.datetime.strptime('2019-11-01T22:04:25.+0100', '%Y-%m-%dT%H:%M:%S.%fZ');
                 try:
+                    #print('hej 3')
+                
                     temp = dt.datetime.strptime(dfT[timeStampStr][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
                 except: 
+                    #print('hej 4')
+                
                     temp = dt.datetime.strptime(dfT['created_at'][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
 
             dfIns['dateTime'][ii]  = temp;
@@ -159,7 +165,7 @@ class Reader:
           #     if dfIns['rate'][ii] == 0:
           #         idx.append(ii);
           #     else:
-          #         rateNow = dfIns['rate'][ii];
+          #         rateNow = dfIns['rate'][ii];SS
           #         while len(idx) > 0: 
           #             dfIns['rate'][idx.pop()] = rateNow; 
           #         idx = list();  
@@ -188,13 +194,19 @@ class Reader:
         for ii in range(0,len(dfE['dateString'])):
             
             try: 
+                #print('hejhej')
                 temp = dt.datetime.strptime(dfE['dateString'][ii], '%Y-%m-%dT%H:%M:%S.%fZ');
             except:
                 #print('ii: '  + str(ii))
+                #print('hejhej 2')
                 temp = 0;
                 #print(dfE['dateString'][ii-1])
                 #print(dfE['dateString'][ii])
-                temp = dt.datetime.strptime(dfE['dateString'][ii], '%Y-%m-%dT%H:%M:%S.%f+0100');
+                try:
+                    temp = dt.datetime.strptime(dfE['dateString'][ii], '%Y-%m-%dT%H:%M:%S.%f+0100');
+                except:
+                    temp = dt.datetime.strptime(dfE['dateString'][ii], '%Y-%m-%dT%H:%M:%SZ');
+                        
                 #temp = dt.datetime.strptime('2019-11-01T22:04:25.814+0100', '%Y-%m-%dT%H:%M:%S.%fZ');
             self.dfCGM['dateTime'][ii]  = temp;
             if ii == 0:

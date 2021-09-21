@@ -15,24 +15,26 @@ import csv
 class ReaderMedtronic: 
    
     
-    def __init__(self, patientName,fn, dfCGMIn = False, dfInsulinIn = False):
+    def __init__(self, patientName,fn, headerLine = 6, dateFormat = "%Y-%m-%d %H:%M:%S", insulinOffset = 0,  dfCGMIn = False, dfInsulinIn = False):
         self.patientName = patientName; 
+        self.dateFormat = dateFormat;
+        self.insulinOffset = insulinOffset
         self.dfCGM = dfCGMIn; 
         self.dfInsulin = dfInsulinIn
-        self.numDayNight = 30
+        self.numDayNight = 1
         self.booleanWholeDayNight = True
         self.timeCGMStableSec = 20*60;
-        self.dfCGM, self.dfInsulin = self.read(fn);
+        self.dfCGM, self.dfInsulin = self.read(fn, headerLine);
         
-    def read(self, fn):
+    def read(self, fn, headerLine):
         
         df = pd.DataFrame();
         
-        dfRead = pd.read_csv(fn,  sep=';', header = 6);
+        dfRead = pd.read_csv(fn,  sep=';', header = headerLine);
         dfCGM   = pd.DataFrame(columns=['dateTime', 'cgm', 'deltaTimeSec']);
         dfInsulin = pd.DataFrame(columns=['dateTime', 'bolus', 'rate', 'deltaTimeSec'])
         
-        index = dfRead['Index'].to_list()
+        #index = dfRead['Index'].to_list()
         time = dfRead['Time'].to_list()
         date = dfRead['Date'].to_list()
         cgm  = dfRead['Sensor Glucose (mmol/L)']
@@ -53,11 +55,13 @@ class ReaderMedtronic:
         firstIndexInsulin = 0; 
         for jj in range(0, len(date)-1):
         #for jj in range(len(date)-1-1, -1, -1):    
-            print("jj: " + str(jj)  
-            try:
+            #print("jj: " + str(jj))  
+            #try:
+            
+            if type(date[jj]) == str and not(date[jj].__contains__('MiniMed')):
                 dateTimeString = str(date[jj]) + ' ' + str(time[jj]);
                 #print("dateTimeString: " + dateTimeString)
-                tempDateTime = dt.datetime.strptime(dateTimeString, "%Y-%m-%d %H:%M:%S"); 
+                tempDateTime = dt.datetime.strptime(dateTimeString, self.dateFormat); 
                 dateTimeListInsulin.append(tempDateTime)
                 if jj == 0:
                     deltaTimeSec = 0;
@@ -74,7 +78,8 @@ class ReaderMedtronic:
                 rateString = str(rate[jj])
                 rateFloat = float(rateString.replace(',', '.'))
                 rateList.append(rateFloat)
-            except:    
+            else:
+            # except:    
                 print("jj: " + str(jj))
                 nextPart = jj
                 break
@@ -82,7 +87,7 @@ class ReaderMedtronic:
         # Remove nan in bolus list and replace with 0
         # Add basal rate (in U/hour) to every row
         # Does not change any order
-        lastIndexInsulin = nextPart - 1;
+        lastIndexInsulin = nextPart - 1 + self.insulinOffset;
         rateCurrent = 0; 
         for rr in range(lastIndexInsulin, firstIndexInsulin-1, -1):
             if bolusList[rr] > 0:
@@ -106,7 +111,7 @@ class ReaderMedtronic:
         
                 dateTimeString = str(date[kk]) + ' ' + str(time[kk]);
                 #print("dateTimeString: " + dateTimeString)
-                tempDateTime = dt.datetime.strptime(dateTimeString, "%Y-%m-%d %H:%M:%S"); 
+                tempDateTime = dt.datetime.strptime(dateTimeString, self.dateFormat); 
                 if kk == nextPart:
                     deltaTimeSec = 0;
                     lastTime = tempDateTime;

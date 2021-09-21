@@ -10,7 +10,7 @@ Filename specified in the beginning of the file, one Entry and one treatment fil
 The files are exports from Nightscout
 
 """
-
+import pickle
 from io import StringIO
 import json 
 import numpy as np
@@ -56,6 +56,37 @@ henrikE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/Hen
 henrikT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/HenrikGrentzelius/treatments.json'
 
 
+##
+susanE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/SusanMustafa/samihusseint1d.herokuapp.com_entries.json'
+susanT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/SusanMustafa/samihusseint1d.herokuapp.com_treatments.json'
+readerSusan = Reader.Reader('Susan', susanE, susanT,  timeCGMStableMin, 'created_at');
+
+mattiasE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/MattiasSchain/entries_mattiasSchain.json'
+mattiasT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/MattiasSchain/treatments_mattiasSchain.json'
+readerMattias = Reader.Reader('Mattias', mattiasE, mattiasT,  timeCGMStableMin, 'created_at');
+
+andreasE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/AndreasBjorklund/entries_andreas.json'
+andreasT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/AndreasBjorklund/treatments_andreas.json'
+readerAndreas = Reader.Reader('Andreas', andreasE, andreasT,  timeCGMStableMin, 'created_at');
+
+
+analyzerSusan = Analyzer.Analyzer('Susan', readerSusan)
+analyzerMattias = Analyzer.Analyzer('Mattias', readerMattias)
+analyzerAndreas = Analyzer.Analyzer('Andreas', readerAndreas)
+
+
+# henrikSjoE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/HenrikSjostrand2/henriksjostrand_entries_3months.json'
+# henrikSjoT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/HenrikSjostrand2/henriksjostrand_treatments_3months.json'
+# readerHenrikSjo = Reader.Reader('HenrikSjo', henrikSjoE, henrikSjoT,  timeCGMStableMin, 'created_at');
+# Henrik har laddat upp csv filer istället för json-filer
+
+danielT              = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanielTreatments_all.json' # Treatment file 1 and 2 put together to one file
+danielE              = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/DanielJohansson/InlamningFinal/DanilEntries_all2.json' # Entry file 1 and 2 put together to one file
+readerDaniel = Reader.Reader('Daniel', danielE, danielT,  timeCGMStableMin, 'timestamp');
+readerDaniel.numDayNight = 118 # Hard coded number of days because the treatment and entry files are put together from two different periods. Not enough to look at last and first date.
+
+
+
 pd.set_option('mode.chained_assignment', None)
 
 ## Create reading object for all patients
@@ -84,8 +115,19 @@ analyzerDaniel2 = Analyzer.Analyzer('Daniel2', readerDaniel2)
 analyzerEmma    = Analyzer.Analyzer('Emma', readerEmma)
 analyzerHenrik  = Analyzer.Analyzer('Henrik', readerHenrik)
 
+analyzerDaniel = Analyzer.Analyzer('Daniel', readerDaniel)
 
-# Write output files for all patients:
+analyzerList = list()
+analyzerList = [analyzerPetra, analyzerPaul, analyzerClara, analyzerCecilia, analyzerIngrid, analyzerDaniel, analyzerEmma, analyzerHenrik]
+for analyzer in analyzerList:
+    analyzer.calcAllCGM(); 
+        
+
+analyzerList = [analyzerPetra, analyzerPaul, analyzerClara, analyzerCecilia, analyzerIngrid, analyzerDaniel, analyzerEmma, analyzerHenrik, analyzerSusan, analyzerMattias, analyzerAndreas]
+for analyzer in analyzerList:
+    analyzer.writeAll(); 
+ 
+# Write output files 
 analyzerPetra.writeAll()   
 analyzerPaul.writeAll()
 analyzerClara.writeAll()   
@@ -95,3 +137,5 @@ analyzerDaniel1.writeAll()
 analyzerDaniel2.writeAll()
 analyzerEmma.writeAll()
 analyzerHenrik.writeAll()
+
+analyzerDaniel.writeAll()

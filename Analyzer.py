@@ -117,8 +117,8 @@ class Analyzer:
         self.tirNightValue          = self.calcTimeInXNew(self.dfCGMNight, self.tirLevel, '[]')  # [3.9 10]
         self.tirDayValue            = self.calcTimeInXNew(self.dfCGMDay,   self.tirLevel, '[]')  # [3.9 10]
         
-        self.titNightValue          = self.calcTimeInXNew(self.dfCGMDay, self.titLevel, '[]') # [4 8]
-        self.tirNightValue          = self.calcTimeInXNew(self.dfCGMDay, self.tirLevel, '[]') # [4 8]
+        self.titNightValue          = self.calcTimeInXNew(self.dfCGMNight, self.titLevel, '[]') # [4 8]
+        self.titDayValue            = self.calcTimeInXNew(self.dfCGMDay, self.titLevel, '[]') # [4 8]
     
         cgmMean, cgmSD, cgmSCV = self.calcCGMVariation(self.dfCGM);
         self.cgmMean = cgmMean;
@@ -209,7 +209,37 @@ class Analyzer:
         file_object.write('tirNatt; ' + str(self.tirNightValue).replace(".", ",") + ';\n');
         file_object.write('TDD genomsnitt; ' + str(self.tdd).replace(".", ",") + ';\n');
         file_object.close()
-
+        
+    def printAll(self):
+            ## Print the result in the command windows:     
+            print('Patient name; ' + self.patientName);
+            print('tir; ' + str(self.tir).replace(".", ",") );
+            print('tit; ' + str(self.tit).replace(".", ",") );
+            
+            print('tihyperLevel1; ' + str(self.tihyperLevel1Value).replace(".", ",") );
+            print('tihyperLevel2; ' + str(self.tihyperLevel2Value).replace(".", ",") );
+            print('tihypoLevel1;  ' + str(self.tihypoLevel1Value).replace(".", ",") );
+            print('tihypoLevel2;  ' + str(self.tihypoLevel2Value).replace(".", ",") + '\n');
+            
+            print('cgmMean; ' + str(self.cgmMean).replace(".", ",")   );
+            print('cgmSD;   ' + str(self.cgmSD).replace(".", ",")   );
+            print('cgmSCV;  ' + str(self.cgmSCV).replace(".", ",")  + ';\n');
+            
+            print('cgmSDDay;   ' + str(self.cgmSDDay).replace(".", ",")   );
+            print('cgmSDNight; ' + str(self.cgmSDNight).replace(".", ",") + ';\n');
+            
+            #print('cgmPGS;  ' + str(self.cgmPGS)  );
+            #print('cgmMAGE; ' + str(self.cgmMAGE) + ';\n\n');
+            
+            print('tihypoDagLevel1; ' + str(self.tihypoDayLevel1Value).replace(".", ",") );
+            print('tihypoDagLevel2; ' + str(self.tihypoDayLevel2Value).replace(".", ",") );
+            print('tihypoNattLevel1;  ' + str(self.tihypoNightLevel1Value).replace(".", ",") );
+            print('tihypoNattLevel2;  ' + str(self.tihypoNightLevel2Value).replace(".", ",") + '\n');
+            
+            print('tirDag;  ' + str(self.tirDayValue).replace(".", ",") );
+            print('tirNatt; ' + str(self.tirNightValue).replace(".", ",") );
+            print('TDD genomsnitt; ' + str(self.tdd).replace(".", ",") + '\n');
+            
     def calcPGS(self, dfCGM, GVP, MG, PTIR, numDayNight):
         
         # PGS: 
