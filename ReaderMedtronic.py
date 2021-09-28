@@ -21,11 +21,32 @@ class ReaderMedtronic:
         self.insulinOffset = insulinOffset
         self.dfCGM = dfCGMIn; 
         self.dfInsulin = dfInsulinIn
-        self.numDayNight = 1
+        
         self.booleanWholeDayNight = True
         self.timeCGMStableSec = 20*60;
         self.dfCGM, self.dfInsulin = self.read(fn, headerLine);
+        first = self.dfCGM.iloc[0].dateTime.date()
+        last  = self.dfCGM.iloc[len(self.dfCGM)-1].dateTime.date()
         
+        self.dfCGM = self.removeFirstLastDate(self.dfCGM, first, last)
+        self.dfInsulin = self.removeFirstLastDate(self.dfInsulin, first, last)
+        self.numDayNight = (first-last).days + 1
+        
+    def removeFirstLastDate(self, df, first, last):
+        numList = list(); 
+        for ii in range(0, len(df)):
+            dateNow = df.iloc[ii].dateTime.date()
+            if (dateNow == first) | (dateNow == last):
+                numList.append(ii)
+        df = df.drop(index = numList)
+        df = df.reset_index()
+        return df
+        
+
+                
+    def calcNumDays(self):
+        self.numDayNight = 1
+    
     def read(self, fn, headerLine):
         
         df = pd.DataFrame();
@@ -41,6 +62,8 @@ class ReaderMedtronic:
         bolus = dfRead['Bolus Volume Delivered (U)']
         rate = dfRead['Basal Rate (U/h)']
         
+        idxRate = rate == 'RATE UNKNOWN'
+        rate[idxRate] = 0
         firstBool = True
         dateTimeListInsulin = list(); 
         
@@ -106,6 +129,8 @@ class ReaderMedtronic:
         dateTimeListCGM = list(); 
         deltaTimeSecList = list();
         
+        ## Second part of file, contains CGM values
+        print("Reading second part of the file")
         for kk in range(nextPart, len(date)-1):
             try:
         
