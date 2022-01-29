@@ -30,6 +30,12 @@ class ReaderMedtronic:
         
         self.dfCGM = self.removeFirstLastDate(self.dfCGM, first, last)
         self.dfInsulin = self.removeFirstLastDate(self.dfInsulin, first, last)
+        
+        self.dfCGM, self.dfInsulin = self.extractLastNDays();
+        first = self.dfCGM.iloc[0].dateTime.date()
+        last  = self.dfCGM.iloc[len(self.dfCGM)-1].dateTime.date()
+         
+        
         self.numDayNight = (first-last).days + 1
         
     def removeFirstLastDate(self, df, first, last):
@@ -172,3 +178,21 @@ class ReaderMedtronic:
         dfCGM['deltaTimeSec'] = deltaTimeSecList
         
         return dfCGM, dfInsulin
+    
+    def extractLastNDays(self, nDays = 14):
+        # Find the last whole day/night (dygn), extract 14 days back and remove the rest of the data
+        # Both for CGM and Insulin
+        # Call only if numDayNight > 14
+     
+        stopD  = self.dfCGM['dateTime'].iloc[0]; # Last day in the dataframe
+        newStartD = stopD - dt.timedelta(days=nDays); # New start date to extract the last 14 days in the dataframe
+       
+        idx1 = (self.dfCGM['dateTime'] >= newStartD); # Find all indeces to keep
+        startIdxCGM = np.count_nonzero(idx1)-1; # First index for the new start date
+       
+        newCGM = self.dfCGM.iloc[0:startIdxCGM]; # CGM extracted for 14 days
+
+        idx2 = (self.dfInsulin['dateTime'] >= newStartD) & (self.dfInsulin['dateTime'] <= stopD)
+        newInsulin = self.dfInsulin[idx2]; # Insulin extracted for 14 days
+       
+        return newCGM, newInsulin

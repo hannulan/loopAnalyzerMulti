@@ -49,6 +49,17 @@ class Reader:
             self.numDayNight, self.booleanWholeDayNight, self.dfCGM, self.dfInsulin = self.fixData(); # Remove to that only whole day/nigth periods are in data series.
             print('size dfCGM, efter fix: ' + str(len(self.dfCGM)))
             print('size dfInsulin, efter fix: ' + str(len(self.dfInsulin)))
+            
+            print('Extracting two last weeks')
+            
+            self.dfCGM, self.dfInsulin = self.extractLastNDays();
+            print('size dfCGM, 14 days: ' + str(len(self.dfCGM)))
+            print('size dfInsulin, 14 days: ' + str(len(self.dfInsulin)))
+            
+            first = self.dfCGM.iloc[0].dateTime.date()
+            last  = self.dfCGM.iloc[len(self.dfCGM)-1].dateTime.date()
+            self.numDayNight = (first-last).days + 1
+            
         else:
             self.readFromFile = 1; 
             #self.datafile_entries = fileNameEntries; #self.patientName + '\\' + 'response_entries.json'; 
@@ -298,23 +309,20 @@ class Reader:
         
         return startIdx, stopIdx
     
-    # def createCarbStructure(self):
-        
-    #     idx = np.isfinite(self.dfTreatments['carbs']);
-        
-    #     self.dfCarbs['carbs'] = np.array(self.dfTreatments['carbs'][idx]);
+    def extractLastNDays(self, nDays = 14):
+        # Find the last whole day/night (dygn), extract 14 days back and remove the rest of the data
+        # Both for CGM and Insulin
+        # Call only if numDayNight > 14
+     
+        stopD  = self.dfCGM['dateTime'].iloc[0]; # Last day in the dataframe
+        newStartD = stopD - dt.timedelta(days=nDays); # New start date to extract the last 14 days in the dataframe
+       
+        idx1 = (self.dfCGM['dateTime'] >= newStartD); # Find all indeces to keep
+        startIdxCGM = np.count_nonzero(idx1)-1; # First index for the new start date
+       
+        newCGM = self.dfCGM.iloc[0:startIdxCGM]; # CGM extracted for 14 days
 
-    #     dateTemp = np.array(self.dfTreatments['timestamp'][idx]);   
-    #     counter = 0;
-    #     for jj in dateTemp:
-    #         self.dfCarbs['dateTime'][counter] = dt.datetime.strptime(jj, '%Y-%m-%dT%H:%M:%SZ');
-    #         counter = counter + 1;
-    #     #tempNext = dt.datetime.strptime(self.dfTreatments['timestamp'][1], '%Y-%m-%dT%H:%M:%SZ');
-    #     temp = dt.datetime.strptime(self.dfTreatments['timestamp'][0], '%Y-%m-%dT%H:%M:%SZ');
-    #     for ii in range(1,len(self.dfBasal['deltaTimeSec'])):    
-    #         #tempNext = self.dfBasal['dateTime'][ii-1] - self.dfBasal['dateTime'][ii];
-    #         sec = self.dfBasal['dateTime'][ii-1] - self.dfBasal['dateTime'][ii];
-    #         #sec = temp - tempNext;
-    #         self.dfBasal['deltaTimeSec'][ii] = sec.total_seconds();
-    #         #temp = tempNext; 
-            
+        idx2 = (self.dfInsulin['dateTime'] >= newStartD) & (self.dfInsulin['dateTime'] <= stopD)
+        newInsulin = self.dfInsulin[idx2]; # Insulin extracted for 14 days
+       
+        return newCGM, newInsulin

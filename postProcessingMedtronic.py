@@ -22,7 +22,7 @@ import ReaderMedtronic
 ## Ladda spydata fil först: 
 # fn = 'C:\Users\hannu\Dropbox\Diassist_OpenAPS_study\Data_fran_deltagare\Resultat\Medtronic/Medtronic_16.spydata
 
-cc =['name', 'tir', 'tit', 'tihyperLevel1', 'tihyperLevel2', 'tihypoLevel1', 'tihypoLevel2', 'cgmMean', 'cgmSD', 'cgmSCV', 'cgmSDDay', 'cgmSDNight', 'tihypoDagLevel1', 'tihypoDagLevel2', 'tihypoNattLevel1', 'tihypoNattLevel2', 'tirDag', 'tirNatt', 'tdd', 'antal_dagar']
+cc =['name', 'tir', 'tit', 'tihyperLevel1', 'tihyperLevel2', 'tihypoLevel1', 'tihypoLevel2', 'cgmMean', 'cgmSD', 'cgmSCV', 'cgmSDDay', 'cgmSDNight', 'tihypoDagLevel1', 'tihypoDagLevel2', 'tihypoNattLevel1', 'tihypoNattLevel2', 'tirDag', 'tirNatt', 'tdd', 'antal_dagar', 'first', 'last']
    
 dataList = list();
 for nn in range(0, len(analyzerList)):
@@ -32,5 +32,5 @@ for nn in range(0, len(analyzerList)):
 
 
 df = pd.DataFrame(dataList, columns = cc)
-df.to_csv('allMedtronic.csv', sep = ';', decimal= ",")
+df.to_csv('allMedtronic_14days.csv', sep = ';', decimal= ",")
 

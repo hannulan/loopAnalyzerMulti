@@ -69,10 +69,16 @@ andreasE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/An
 andreasT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/AndreasBjorklund/treatments_andreas.json'
 readerAndreas = Reader.Reader('Andreas', andreasE, andreasT,  timeCGMStableMin, 'created_at');
 
+janE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/JanSturestig/Final/diasigvard.herokuapp.com.json'
+janT = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/JanSturestig/Final/diasigvardTreatments.json'
+readerJan = Reader.Reader('Jan', janE, janT,  timeCGMStableMin, 'created_at');
+
+
 
 analyzerSusan = Analyzer.Analyzer('Susan', readerSusan)
 analyzerMattias = Analyzer.Analyzer('Mattias', readerMattias)
 analyzerAndreas = Analyzer.Analyzer('Andreas', readerAndreas)
+analyzerJan = Analyzer.Analyzer('Jan', readerJan)
 
 
 # henrikSjoE = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/HenrikSjostrand2/henriksjostrand_entries_3months.json'
@@ -123,10 +129,15 @@ for analyzer in analyzerList:
     analyzer.calcAllCGM(); 
         
 
-analyzerList = [analyzerPetra, analyzerPaul, analyzerClara, analyzerCecilia, analyzerIngrid, analyzerDaniel, analyzerEmma, analyzerHenrik, analyzerSusan, analyzerMattias, analyzerAndreas]
+analyzerList = [analyzerPetra, analyzerPaul, analyzerClara, analyzerCecilia, analyzerIngrid, analyzerDaniel, analyzerEmma, analyzerHenrik, analyzerSusan, analyzerMattias, analyzerAndreas, analyzerJan]
 for analyzer in analyzerList:
     analyzer.writeAll(); 
  
+    
+readerList = [readerPetra, readerPaul, readerClara, readerCecilia, readerIngrid, readerDaniel, readerEmma, readerHenrik, readerSusan, readerMattias, readerAndreas, readerJan]
+nameList =  ['petra', 'paul', 'clara', 'cecilia', 'ingrid','daniel', 'emma', 'henrik', 'susan', 'mattias', 'andreas', 'jan']
+
+
 # Write output files 
 analyzerPetra.writeAll()   
 analyzerPaul.writeAll()

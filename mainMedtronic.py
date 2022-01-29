@@ -52,7 +52,7 @@ fn05 = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/Medtro
 hl05 = 6
 dateFormatList.append("%Y-%m-%d %H:%M:%S")
 
-fn06 = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/Medtronic/Medtronic06/LS 2021-02-22.csv'
+fn06 = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/Medtronic/Medtronic06/LS 2021-02-22_NG2413268H.csv'
 hl06 = 6
 dateFormatList.append("%Y-%m-%d %H:%M:%S")
 
@@ -104,8 +104,8 @@ dateFormatList.append("%Y-%m-%d %H:%M:%S")
 #fn22 = 'C:/Users/hannu/Dropbox/Diassist_OpenAPS_study/Data_fran_deltagare/Medtronic/Medtronic22/.csv'
 
 fnList = list()
-fnList = [fn01, fn02, fn03, fn04, fn05, fn05, fn06, fn07, fn08, fn09, fn10, fn11, fn12, fn13, fn14, fn15, fn17]
-hlList = [hl01, hl02, hl03, hl04, hl05, hl05, hl06, hl07, hl08, hl09, hl10, hl11, hl12, hl13, hl14, hl15, hl17]
+fnList =   [fn01,  fn02,  fn03,  fn04,  fn05,  fn06,  fn07,  fn08,  fn09,  fn10,  fn11,  fn12,  fn13,  fn14,  fn15, fn17]
+hlList =   [hl01,  hl02,  hl03,  hl04,  hl05,  hl06,  hl07,  hl08,  hl09,  hl10,  hl11,  hl12,  hl13,  hl14,  hl15, hl17]
 nameList = ['p01', 'p02', 'p03', 'p04', 'p05', 'p06', 'p07', 'p08', 'p09', 'p10', 'p11', 'p12', 'p13', 'p14', 'p15', 'p17']
 nList = [0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 nList = [8, 9, 10, 11, 12, 13, 14, 15]

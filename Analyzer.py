@@ -211,7 +211,9 @@ class Analyzer:
         file_object.close()
         
     def getResult(self):
-        data = [[self.patientName, self.tir, self.tit, self.tihyperLevel1Value, self.tihyperLevel2Value, self.tihypoLevel1Value, self.tihypoLevel2Value, self.cgmMean, self.cgmSD, self.cgmSCV, self.cgmSDDay, self.cgmSDNight, self.tihypoDayLevel1Value, self.tihypoDayLevel2Value, self.tihypoNightLevel1Value, self.tihypoNightLevel2Value, self.tirDayValue, self.tirNightValue, self.tdd, self.numDayNight]]
+        last = self.dfCGM.iloc[0].dateTime.date()
+        first  = self.dfCGM.iloc[len(self.dfCGM)-1].dateTime.date()
+        data = [[self.patientName, self.tir, self.tit, self.tihyperLevel1Value, self.tihyperLevel2Value, self.tihypoLevel1Value, self.tihypoLevel2Value, self.cgmMean, self.cgmSD, self.cgmSCV, self.cgmSDDay, self.cgmSDNight, self.tihypoDayLevel1Value, self.tihypoDayLevel2Value, self.tihypoNightLevel1Value, self.tihypoNightLevel2Value, self.tirDayValue, self.tirNightValue, self.tdd, self.numDayNight, first, last]]
         return data
         
     def printAll(self):
